@@ -1,4 +1,4 @@
-from simulate import Simulate
+from simulate import Simulate, cs
 a=Simulate(cs.MX(2),cs.MX(1),cs.MX(1))
 a.set_grid(cs.MX(0),cs.MX(10),cs.MX(100))
 f=cs.vertcat((1-a.x[1]**2)*a.x[0]-a.x[1]+a.u,a.x[0])
