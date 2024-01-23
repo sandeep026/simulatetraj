@@ -1,6 +1,5 @@
 import casadi as cs
 import matplotlib.pyplot as plt
-from helper import Helper
 
 class Simulate:
     '''
@@ -95,7 +94,7 @@ class Simulate:
         else:
             pass        
         dae = {'x':self.x, 't':self.tau,'u':temp, 'ode':self.f_s}
-        self.x_n = cs.integrator('x_n','cvodes',dae,self.time[0],self.time[1:],{'abstol':1e-6,'reltol':1e-3})
+        self.x_n = cs.integrator('x_n','cvodes',dae,self.time[0],self.time[1:],{'abstol':1e-12,'reltol':1e-8})
 
     def set_input(self,u:cs.DM|cs.MX=None,p:cs.DM|cs.MX=None):
         '''
