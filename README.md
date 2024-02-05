@@ -81,8 +81,8 @@ Plot the state and control time histories.
 ```
 a.plot_sol()
 ```
-![alt text](image-4.png)
-![alt text](image-5.png)
+![alt text](img/image-4.png)
+![alt text](img/image-5.png)
 
 ### without control elimination
 
@@ -99,9 +99,9 @@ r=a.r
 t=a.t_grid
 a.plot_sol()
 ```
-![alt text](image.png)
-![alt text](image-1.png)
-![alt text](image-2.png)
+![alt text](img/image.png)
+![alt text](img/image-1.png)
+![alt text](img/image-2.png)
 
 ## $t^2$
 
@@ -126,7 +126,7 @@ print('Global error x(N+1) for xdot=2t:',cs.evalf(b.r['xf'][-1]-100))
 ```
 Global error x(N+1) for xdot=2t: 0.0016011
 ```
-![alt text](image-6.png)
+![alt text](img/image-6.png)
 
 The default values for cvodes is 0.001 and 0.1 for absolute and relative tolerance, respectively. By increasing the tolerance global error can be reduced.
 ```
@@ -169,7 +169,7 @@ d.start(X0=x0,P=p,tol=1e-8)
 plt.plot(cs.evalf(d.r['xf'][0,:]),cs.evalf(d.r['xf'][1,:]),'o')
 plt.show()
 ```
-![alt text](image-7.png)
+![alt text](img/image-7.png)
 # Advanced
 The integrator class can be used in conjuction with *trajectory optimization*, where the symbolic primitives can be passed for initial state and control inputs. This can be embedded in an optimization problem and solved for the optimal control input vector.
 ```
