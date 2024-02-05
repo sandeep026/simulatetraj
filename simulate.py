@@ -3,10 +3,69 @@ import matplotlib.pyplot as plt
 
 class Simulate:
     '''
-    Simulate dynamics
+    A class to numerically solve intial value problem using CVODES.
 
-    given the ode, initial condition, time grid and control input as a piecewise constant function,
-    the evolution of dynamics can be computed
+    Attributes
+    ----------
+    tau : cs.MX
+        scaled time domain variable
+    
+    t0 : cs.MX
+        initial time
+    
+    tf : cs.MX
+        final time
+    
+    t : cs.MX
+        time domain variable
+    
+    N : cs.MX
+        number of intervals
+    
+    t_grid_s : cs.MX
+        discrete scaled grid
+    
+    t_grid : cs.MX
+        discrete grid
+    
+    f_s : cs.MX
+        scaled dynamics
+    
+    x_n : cs.Function
+        function object for the integrator
+    
+    x0 : cs.MX
+        intial state
+    
+    r : dict
+        dictionary of results from integration
+    
+    pt_val :
+        numerical value of the parameter vector         
+
+    Parameters
+    ----------
+    n_x : cs.MX
+        number of states
+    n_u : cs.MX, optional
+        number of controls, by default cs.MX(0)
+    
+    n_p : cs.MX, optional
+        number of parameters, by default cs.MX(0)   
+
+    Raises
+    ------
+    ValueError
+        input should not be less than or equal to zero
+    TypeError
+        input must be an integer
+
+    Examples
+    --------
+    >>> from simulate import Simulate
+    >>> import casadi as cs
+    >>> a=Simulate(n_x=cs.MX(2),n_u=cs.MX(1),n_p=cs.MX(1))            
+
     '''
     def __init__(self,n_x: cs.MX,n_u: cs.MX =cs.MX(0),n_p: cs.MX=cs.MX(0)):
         #scaled domain
@@ -18,6 +77,27 @@ class Simulate:
         self.t=cs.MX.sym('t',1)
         # check consistency of imputs entered
         def check_n(a,b,att):
+            '''
+            check_n _summary_
+
+            _extended_summary_
+
+            Parameters
+            ----------
+            a : _type_
+                _description_
+            b : _type_
+                _description_
+            att : _type_
+                _description_
+
+            Raises
+            ------
+            ValueError
+                _description_
+            TypeError
+                _description_
+            '''
             if a.is_constant():
                 if cs.ge(a,b):
                     if a.is_zero():
@@ -38,23 +118,22 @@ class Simulate:
         self.t_grid=cs.DM()
         self.f_s=cs.MX()
         self.x_n=cs.Function()
-        self.u_aug=cs.MX()
         self.x0=cs.MX()
         self.r={}
         self.pt_val=cs.MX()
 
     def set_grid(self,tini: cs.MX,tfin: cs.MX,N:cs.MX):
         '''
-        set_grid
-
-        Scaled domain  tau: [0,1] 
+        Define the time grid for numerical integration.
 
         Parameters
         ----------
         tini : cs.MX
             initial time
+
         tfin : cs.MX
             final time
+
         N : cs.MX
             number of intervals
 
@@ -68,6 +147,10 @@ class Simulate:
             Time must be positive
         ValueError
             Final time must be greater than initial time
+
+        Examples
+        --------
+        >>> a.set_grid(cs.MX(0),cs.MX(10),cs.MX(25))    
         '''
         if N.is_constant():
             if cs.ge(N,cs.MX(1)):
@@ -103,14 +186,18 @@ class Simulate:
 
     def set_ode(self,f):
         '''
-        set_ode 
-
-        set the state derivative
+        Define the state derivative vector
 
         Parameters
         ----------
         f : cs.MX
             expression for the state derivative 
+
+        Examples
+        --------
+
+        >>> f=cs.vertcat((1-a.x[1]**2)*a.x[0]-a.x[1]+a.u,a.x[0])+a.p
+        >>> a.set_ode(f)    
         '''
         # scale ode
         self.f_s=(self.tf-self.t0)*cs.substitute(f,self.t,(self.tf-self.t0)*self.tau)
@@ -118,23 +205,36 @@ class Simulate:
 
     def start(self,X0:cs.DM|cs.MX,U:cs.DM|cs.MX=cs.MX(),P:cs.DM|cs.MX=cs.MX(),tol:float=1e-3):
         '''
-        start 
+        Simulate the dynamics with initial condition with x0, control input u and parameter p
+        using CVODES.
 
-        simulate the dynamics with initial condition with x0, control input u and parameter p.
+        (abstol,reltol)=(tol,100*tol)
 
         Parameters
         ----------
         X0 : cs.DM | cs.MX
             initial condition for the state
-        u : cs.DM | cs.MX, optional
+
+        U : cs.DM | cs.MX, optional
             control input, by default None
-        p : cs.DM | cs.MX, optional
+
+        P : cs.DM | cs.MX, optional
             parameter vector, by default None
 
+        tol : float
+            tolerance for CVODES, by default 1e-3            
+            
         Raises
         ------
         TypeError
             x0 must be of type MX/DM
+
+        Examples
+        --------
+        >>> x0=cs.DM([0,0])
+        >>> a.start(X0=cs.horzcat(x0),U=cs.linspace(-1,1,25).T,P=cs.DM(0))
+        >>> r=a.r
+        >>> t=a.t_grid
         '''
         if isinstance(X0,(cs.MX,cs.DM)):
             pass
@@ -176,10 +276,7 @@ class Simulate:
 
     def plot_sol(self):
         '''
-        plot_sol
-
-        Plot the solution obtained from a finer grid.
-        Casadi data types cannot be plotted.
+        Plots the solution obtained.
 
         Raises
         ------
