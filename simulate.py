@@ -51,11 +51,11 @@ class Simulate:
 
         Parameters
         ----------
-        tini : cs.SX|cs.MX
+        tini : cs.MX
             initial time
-        tfin : cs.SX|cs.MX
+        tfin : cs.MX
             final time
-        N : cs.SX
+        N : cs.MX
             number of intervals
 
         Raises
@@ -221,7 +221,7 @@ if __name__=='__main__':
     # multipoint_simulation-casadi
     a=Simulate(cs.MX(2),cs.MX(1),cs.MX(1))
     a.set_grid(cs.MX(0),cs.MX(10),cs.MX(25))
-    f=cs.vertcat((1-a.x[1]**2)*a.x[0]-a.x[1]+a.u,a.x[0])+a.p
+    f=cs.vertcat((1-a.x[0]**2)*a.x[1]-a.x[0]+a.u,a.x[1])+a.p
     a.set_ode(f)
     x0=cs.DM([0,0])
     a.start(X0=x0,U=cs.linspace(-1,1,25).T,P=cs.DM(0))
