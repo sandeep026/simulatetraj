@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 class Simulate:
     '''
-    A class to numerically solve intial value problem using CVODES.
+    A class to numerically solve initial value problem using CVODES.
 
     Attributes
     ----------
@@ -35,7 +35,7 @@ class Simulate:
         function object for the integrator
     
     x0 : cs.MX
-        intial state
+        initial state
     
     r : dict
         dictionary of results from integration
@@ -75,7 +75,7 @@ class Simulate:
         self.tf=cs.MX.sym('tf',1)
         # actual time domain
         self.t=cs.MX.sym('t',1)
-        # check consistency of imputs entered
+        # check consistency of inputs entered
         def check_n(a,b,att):
             '''
             check_n _summary_
