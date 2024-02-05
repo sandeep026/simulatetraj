@@ -157,7 +157,6 @@ x(t_0)&=\begin{bmatrix}
 \end{aligned}
 $$
 
-
 ```
 d=Simulate(n_x=cs.MX(2),n_p=cs.MX(2))
 d.set_grid(cs.MX(0),cs.MX(15),cs.MX(1000))
@@ -170,9 +169,9 @@ d.start(X0=x0,P=p,tol=1e-8)
 plt.plot(cs.evalf(d.r['xf'][0,:]),cs.evalf(d.r['xf'][1,:]),'o')
 plt.show()
 ```
+![alt text](image-7.png)
 # Advanced
-The integrator class can be used in conjuction with trajectory optimization
-where, symbolic primitives can be passed for state initial state and control inputs. This can be embedded in an optimization and solved for the optimal control input vector.
+The integrator class can be used in conjuction with *trajectory optimization*, where the symbolic primitives can be passed for initial state and control inputs. This can be embedded in an optimization problem and solved for the optimal control input vector.
 ```
 c=Simulate(cs.MX(1),cs.MX(1))
 c.set_grid(cs.MX.sym('tf',1,1),cs.MX.sym('tf',1,1),cs.MX(10))
