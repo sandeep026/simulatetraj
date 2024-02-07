@@ -10,6 +10,7 @@ license = "LGPL-3.0-only"
 python = "^3.11"
 casadi = "^3.6.4"
 matplotlib = "^3.8.2"
+ipykernel = "^6.29.1"
 
 
 [build-system]
