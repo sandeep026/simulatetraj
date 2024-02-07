@@ -13,9 +13,24 @@ Given initial state $x(t_0)=x_0$ and control inputs $u(t)$ on $t \in [t_0,t_f]$,
 
 ## Installation
 
-```
-pip install simulate
-```
+At the moment, the package is tested to run on Windows 10.
+
+* Clone the repository or download zip
+* Open the folder with VScode
+
+### venv
+
+* Create virtual environment using venv
+* All dependencies and package will be installed automatically
+
+### conda
+
+* create conda environment with python >=3.1
+* type ``` pip install poetry```
+* from the directory containing the toml file, type ``` poetry install```
+* all dependencies and package will be installed
+
+Run the python notebooks from examples folder to verify the installation.
 
 ## Dependencies
 
