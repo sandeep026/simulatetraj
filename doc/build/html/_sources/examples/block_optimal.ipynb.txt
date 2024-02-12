@@ -4,7 +4,9 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "### Matthew Kelly: An Introduction to Trajectory Optimization: How to Do Your Own Direct Collocation"
+    "### Optimal control problem 2\n",
+    "\n",
+    "Matthew Kelly: An Introduction to Trajectory Optimization: How to Do Your Own Direct Collocation"
    ]
   },
   {
