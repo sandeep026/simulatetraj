@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+
+<html lang="python" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>simulatetraj.simulate &#8212; simulatetraj 2024 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=12dfc556" />
+    <script src="../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../_static/documentation_options.js?v=a22594b3"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for simulatetraj.simulate</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">casadi</span> <span class="k">as</span> <span class="nn">cs</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<div class="viewcode-block" id="Simulate">
+<a class="viewcode-back" href="../../index.html#simulatetraj.Simulate">[docs]</a>
+<span class="k">class</span> <span class="nc">Simulate</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    A class to numerically solve initial value problem using CVODES.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    tau : cs.MX</span>
+<span class="sd">        scaled time domain variable</span>
+<span class="sd">    </span>
+<span class="sd">    t0 : cs.MX</span>
+<span class="sd">        initial time</span>
+<span class="sd">    </span>
+<span class="sd">    tf : cs.MX</span>
+<span class="sd">        final time</span>
+<span class="sd">    </span>
+<span class="sd">    t : cs.MX</span>
+<span class="sd">        time domain variable</span>
+<span class="sd">    </span>
+<span class="sd">    N : cs.MX</span>
+<span class="sd">        number of intervals</span>
+<span class="sd">    </span>
+<span class="sd">    t_grid_s : cs.MX</span>
+<span class="sd">        discrete scaled grid</span>
+<span class="sd">    </span>
+<span class="sd">    t_grid : cs.MX</span>
+<span class="sd">        discrete grid</span>
+<span class="sd">    </span>
+<span class="sd">    f_s : cs.MX</span>
+<span class="sd">        scaled dynamics</span>
+<span class="sd">    </span>
+<span class="sd">    x_n : cs.Function</span>
+<span class="sd">        function object for the integrator</span>
+<span class="sd">    </span>
+<span class="sd">    x0 : cs.MX</span>
+<span class="sd">        initial state</span>
+<span class="sd">    </span>
+<span class="sd">    r : dict</span>
+<span class="sd">        dictionary of results from integration</span>
+<span class="sd">    </span>
+<span class="sd">    pt_val :</span>
+<span class="sd">        numerical value of the parameter vector         </span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    n_x : cs.MX</span>
+<span class="sd">        number of states</span>
+<span class="sd">    n_u : cs.MX, optional</span>
+<span class="sd">        number of controls, by default cs.MX(0)</span>
+<span class="sd">    </span>
+<span class="sd">    n_p : cs.MX, optional</span>
+<span class="sd">        number of parameters, by default cs.MX(0)   </span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        input should not be less than or equal to zero</span>
+<span class="sd">    TypeError</span>
+<span class="sd">        input must be an integer</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from simulate import Simulate</span>
+<span class="sd">    &gt;&gt;&gt; import casadi as cs</span>
+<span class="sd">    &gt;&gt;&gt; a=Simulate(n_x=cs.MX(2),n_u=cs.MX(1),n_p=cs.MX(1))            </span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">n_x</span><span class="p">:</span> <span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">,</span><span class="n">n_u</span><span class="p">:</span> <span class="n">cs</span><span class="o">.</span><span class="n">MX</span> <span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="n">n_p</span><span class="p">:</span> <span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+        <span class="c1">#scaled domain</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tau</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="o">.</span><span class="n">sym</span><span class="p">(</span><span class="s1">&#39;tau&#39;</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+        <span class="c1"># initial and final time</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">t0</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="o">.</span><span class="n">sym</span><span class="p">(</span><span class="s1">&#39;t0&#39;</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tf</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="o">.</span><span class="n">sym</span><span class="p">(</span><span class="s1">&#39;tf&#39;</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+        <span class="c1"># actual time domain</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="o">.</span><span class="n">sym</span><span class="p">(</span><span class="s1">&#39;t&#39;</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+        <span class="c1"># check consistency of inputs entered</span>
+        <span class="k">def</span> <span class="nf">check_n</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">att</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">            check_n _summary_</span>
+
+<span class="sd">            _extended_summary_</span>
+
+<span class="sd">            Parameters</span>
+<span class="sd">            ----------</span>
+<span class="sd">            a : _type_</span>
+<span class="sd">                _description_</span>
+<span class="sd">            b : _type_</span>
+<span class="sd">                _description_</span>
+<span class="sd">            att : _type_</span>
+<span class="sd">                _description_</span>
+
+<span class="sd">            Raises</span>
+<span class="sd">            ------</span>
+<span class="sd">            ValueError</span>
+<span class="sd">                _description_</span>
+<span class="sd">            TypeError</span>
+<span class="sd">                _description_</span>
+<span class="sd">            &#39;&#39;&#39;</span>
+            <span class="k">if</span> <span class="n">a</span><span class="o">.</span><span class="n">is_constant</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">cs</span><span class="o">.</span><span class="n">ge</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">a</span><span class="o">.</span><span class="n">is_zero</span><span class="p">():</span>
+                        <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">att</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">())</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">att</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="o">.</span><span class="n">sym</span><span class="p">(</span><span class="n">att</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="nb">int</span><span class="p">(</span><span class="n">cs</span><span class="o">.</span><span class="n">evalf</span><span class="p">(</span><span class="n">a</span><span class="p">)),</span><span class="mi">1</span><span class="p">))</span>
+                    <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">att</span><span class="p">,</span><span class="n">a</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">att</span><span class="o">+</span><span class="s1">&#39; must not be less than or equal to zero&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">att</span><span class="o">+</span><span class="s1">&#39; must be a integer&#39;</span><span class="p">)</span>
+        <span class="n">check_n</span><span class="p">(</span><span class="n">n_x</span><span class="p">,</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="s1">&#39;n_x&#39;</span><span class="p">)</span>
+        <span class="n">check_n</span><span class="p">(</span><span class="n">n_u</span><span class="p">,</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="s1">&#39;n_u&#39;</span><span class="p">)</span>
+        <span class="n">check_n</span><span class="p">(</span><span class="n">n_p</span><span class="p">,</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="s1">&#39;n_p&#39;</span><span class="p">)</span>
+        <span class="c1"># set default values</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">t_grid_s</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">DM</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">t_grid</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">DM</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">f_s</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x_n</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">Function</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x0</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="o">=</span><span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pt_val</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Simulate.set_grid">
+<a class="viewcode-back" href="../../index.html#simulatetraj.Simulate.set_grid">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">tini</span><span class="p">:</span> <span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">,</span><span class="n">tfin</span><span class="p">:</span> <span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">,</span><span class="n">N</span><span class="p">:</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Define the time grid for numerical integration.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        tini : cs.MX</span>
+<span class="sd">            initial time</span>
+
+<span class="sd">        tfin : cs.MX</span>
+<span class="sd">            final time</span>
+
+<span class="sd">        N : cs.MX</span>
+<span class="sd">            number of intervals</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            N must not be less than or equal to 1</span>
+<span class="sd">        TypeError</span>
+<span class="sd">            N must be a integer</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            Time must be positive</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            Final time must be greater than initial time</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; a.set_grid(cs.MX(0),cs.MX(10),cs.MX(25))    </span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">N</span><span class="o">.</span><span class="n">is_constant</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">cs</span><span class="o">.</span><span class="n">ge</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(</span><span class="mi">1</span><span class="p">)):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="o">=</span><span class="n">N</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;N must not be less than or equal to 1&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;N must be a integer&#39;</span><span class="p">)</span>
+        <span class="c1"># scaled domain</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">t_grid_s</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="nb">int</span><span class="p">(</span><span class="n">cs</span><span class="o">.</span><span class="n">evalf</span><span class="p">(</span><span class="n">N</span><span class="p">))</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+        <span class="c1"># check the sign of final and initial time </span>
+        <span class="n">temp</span><span class="o">=</span><span class="p">[</span><span class="n">tini</span><span class="p">,</span><span class="n">tfin</span><span class="p">]</span>
+        <span class="n">temp2</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;tini&#39;</span><span class="p">,</span><span class="s1">&#39;tfin&#39;</span><span class="p">]</span>
+        <span class="n">temp3</span><span class="o">=</span><span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">j</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">temp</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">j</span><span class="o">.</span><span class="n">is_constant</span><span class="p">():</span>
+                <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="n">cs</span><span class="o">.</span><span class="n">ge</span><span class="p">(</span><span class="n">j</span><span class="p">,</span><span class="n">cs</span><span class="o">.</span><span class="n">DM</span><span class="p">(</span><span class="mi">0</span><span class="p">))):</span>
+                    <span class="nb">setattr</span><span class="p">(</span><span class="n">Simulate</span><span class="p">,</span><span class="n">temp2</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">j</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">temp2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">+</span><span class="s2">&quot; is not positive&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="n">Simulate</span><span class="p">,</span><span class="n">temp2</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">j</span><span class="p">)</span>
+                <span class="n">temp3</span><span class="o">=</span><span class="mi">1</span>
+        <span class="k">if</span> <span class="n">temp3</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="n">cs</span><span class="o">.</span><span class="n">gt</span><span class="p">(</span><span class="n">temp</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">temp</span><span class="p">[</span><span class="mi">0</span><span class="p">])):</span>
+                <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Final time must be greater than initial time&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="c1"># due to scaling final and initial time are parameter of the ode</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pt_val</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">vertcat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tini</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">tfin</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Simulate.set_ode">
+<a class="viewcode-back" href="../../index.html#simulatetraj.Simulate.set_ode">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_ode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">f</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Define the state derivative vector</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        f : cs.MX</span>
+<span class="sd">            expression for the state derivative </span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+
+<span class="sd">        &gt;&gt;&gt; f=cs.vertcat((1-a.x[1]**2)*a.x[0]-a.x[1]+a.u,a.x[0])+a.p</span>
+<span class="sd">        &gt;&gt;&gt; a.set_ode(f)    </span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="c1"># scale ode</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">f_s</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tf</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">t0</span><span class="p">)</span><span class="o">*</span><span class="n">cs</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="p">,(</span><span class="bp">self</span><span class="o">.</span><span class="n">tf</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">t0</span><span class="p">)</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">tau</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ode</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;x&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="s1">&#39;t&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">tau</span><span class="p">,</span><span class="s1">&#39;u&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">,</span> <span class="s1">&#39;p&#39;</span><span class="p">:</span> <span class="n">cs</span><span class="o">.</span><span class="n">vertcat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">t0</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">tf</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">),</span><span class="s1">&#39;ode&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">f_s</span><span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="Simulate.start">
+<a class="viewcode-back" href="../../index.html#simulatetraj.Simulate.start">[docs]</a>
+    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">X0</span><span class="p">:</span><span class="n">cs</span><span class="o">.</span><span class="n">DM</span><span class="o">|</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">,</span><span class="n">U</span><span class="p">:</span><span class="n">cs</span><span class="o">.</span><span class="n">DM</span><span class="o">|</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(),</span><span class="n">P</span><span class="p">:</span><span class="n">cs</span><span class="o">.</span><span class="n">DM</span><span class="o">|</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(),</span><span class="n">tol</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Simulate the dynamics with initial condition with x0, control input u and parameter p</span>
+<span class="sd">        using CVODES.</span>
+
+<span class="sd">        (abstol,reltol)=(tol,100*tol)</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        X0 : cs.DM | cs.MX</span>
+<span class="sd">            initial condition for the state</span>
+
+<span class="sd">        U : cs.DM | cs.MX, optional</span>
+<span class="sd">            control input, by default None</span>
+
+<span class="sd">        P : cs.DM | cs.MX, optional</span>
+<span class="sd">            parameter vector, by default None</span>
+
+<span class="sd">        tol : float</span>
+<span class="sd">            tolerance for CVODES, by default 1e-3            </span>
+<span class="sd">            </span>
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        TypeError</span>
+<span class="sd">            x0 must be of type MX/DM</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; x0=cs.DM([0,0])</span>
+<span class="sd">        &gt;&gt;&gt; a.start(X0=cs.horzcat(x0),U=cs.linspace(-1,1,25).T,P=cs.DM(0))</span>
+<span class="sd">        &gt;&gt;&gt; r=a.r</span>
+<span class="sd">        &gt;&gt;&gt; t=a.t_grid</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">X0</span><span class="p">,(</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">,</span><span class="n">cs</span><span class="o">.</span><span class="n">DM</span><span class="p">)):</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;x0 must be of type MX/DM&#39;</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">U</span><span class="o">.</span><span class="n">is_empty</span><span class="p">():</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_u</span><span class="o">.</span><span class="n">is_zero</span><span class="p">():</span>
+                <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;control input required&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_u</span><span class="o">.</span><span class="n">is_zero</span><span class="p">():</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;control inputs not required&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">cs</span><span class="o">.</span><span class="n">eq</span><span class="p">(</span><span class="n">cs</span><span class="o">.</span><span class="n">evalf</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_u</span><span class="p">),</span><span class="n">cs</span><span class="o">.</span><span class="n">evalf</span><span class="p">(</span><span class="n">U</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span> <span class="ow">and</span> <span class="n">cs</span><span class="o">.</span><span class="n">eq</span><span class="p">(</span><span class="n">cs</span><span class="o">.</span><span class="n">evalf</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="p">),</span><span class="n">cs</span><span class="o">.</span><span class="n">evalf</span><span class="p">(</span><span class="n">U</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span> <span class="p">:</span>
+                    <span class="k">pass</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;wrong dimension for control matrix&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">P</span><span class="o">.</span><span class="n">is_empty</span><span class="p">():</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_p</span><span class="o">.</span><span class="n">is_zero</span><span class="p">():</span>
+                <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;parameter required&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_p</span><span class="o">.</span><span class="n">is_zero</span><span class="p">():</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;parameter not required&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">cs</span><span class="o">.</span><span class="n">eq</span><span class="p">(</span><span class="n">cs</span><span class="o">.</span><span class="n">evalf</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_p</span><span class="p">),</span><span class="n">cs</span><span class="o">.</span><span class="n">evalf</span><span class="p">(</span><span class="n">P</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span> <span class="ow">and</span> <span class="n">cs</span><span class="o">.</span><span class="n">eq</span><span class="p">(</span><span class="n">cs</span><span class="o">.</span><span class="n">DM</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="n">cs</span><span class="o">.</span><span class="n">evalf</span><span class="p">(</span><span class="n">P</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span> <span class="p">:</span>
+                    <span class="k">pass</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;wrong dimension for control matrix&#39;</span><span class="p">)</span>                
+        <span class="bp">self</span><span class="o">.</span><span class="n">x0</span><span class="o">=</span><span class="n">X0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">u_val</span><span class="o">=</span><span class="n">U</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x_n</span> <span class="o">=</span> <span class="n">cs</span><span class="o">.</span><span class="n">integrator</span><span class="p">(</span><span class="s1">&#39;x_n&#39;</span><span class="p">,</span><span class="s1">&#39;cvodes&#39;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">ode</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">t_grid_s</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="bp">self</span><span class="o">.</span><span class="n">t_grid_s</span><span class="p">[</span><span class="mi">1</span><span class="p">:],{</span><span class="s1">&#39;abstol&#39;</span><span class="p">:</span><span class="n">tol</span><span class="p">,</span><span class="s1">&#39;reltol&#39;</span><span class="p">:</span><span class="mi">100</span><span class="o">*</span><span class="n">tol</span><span class="p">})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">x_n</span><span class="p">(</span><span class="n">x0</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">x0</span><span class="p">,</span><span class="n">u</span><span class="o">=</span><span class="n">U</span><span class="p">,</span><span class="n">p</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">vertcat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pt_val</span><span class="p">,</span><span class="n">P</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">t_grid</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tini</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">tfin</span><span class="p">,</span><span class="nb">int</span><span class="p">(</span><span class="n">cs</span><span class="o">.</span><span class="n">evalf</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="p">))</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Simulate.plot_sol">
+<a class="viewcode-back" href="../../index.html#simulatetraj.Simulate.plot_sol">[docs]</a>
+    <span class="k">def</span> <span class="nf">plot_sol</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Plots the solution obtained.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            No plots for symbolic maps</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tini</span><span class="o">.</span><span class="n">is_constant</span><span class="p">()</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">tfin</span><span class="o">.</span><span class="n">is_constant</span><span class="p">():</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;No plots for symbolic maps&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">cs</span><span class="o">.</span><span class="n">ge</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="p">,</span><span class="mi">50</span><span class="p">):</span>
+            <span class="n">sty</span><span class="o">=</span><span class="s1">&#39;-&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sty</span><span class="o">=</span><span class="s1">&#39;o-&#39;</span>    
+        <span class="n">X</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">evalf</span><span class="p">(</span><span class="n">cs</span><span class="o">.</span><span class="n">horzcat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x0</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;xf&#39;</span><span class="p">]))</span><span class="o">.</span><span class="n">full</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">cs</span><span class="o">.</span><span class="n">evalf</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_x</span><span class="p">))):</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">cs</span><span class="o">.</span><span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">cs</span><span class="o">.</span><span class="n">evalf</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">t_grid</span><span class="p">)</span><span class="o">.</span><span class="n">full</span><span class="p">(),</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span><span class="n">cs</span><span class="o">.</span><span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">i</span><span class="p">,:],</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span><span class="n">sty</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;state&#39;</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_u</span><span class="o">.</span><span class="n">is_zero</span><span class="p">():</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">U</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">evalf</span><span class="p">(</span><span class="n">cs</span><span class="o">.</span><span class="n">horzcat</span><span class="p">(</span><span class="n">cs</span><span class="o">.</span><span class="n">DM</span><span class="o">.</span><span class="n">nan</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">cs</span><span class="o">.</span><span class="n">evalf</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_u</span><span class="p">)),</span><span class="mi">1</span><span class="p">),</span><span class="bp">self</span><span class="o">.</span><span class="n">u_val</span><span class="p">))</span><span class="o">.</span><span class="n">full</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">cs</span><span class="o">.</span><span class="n">evalf</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_u</span><span class="p">))):</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">cs</span><span class="o">.</span><span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">cs</span><span class="o">.</span><span class="n">evalf</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">t_grid</span><span class="p">)</span><span class="o">.</span><span class="n">full</span><span class="p">(),</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span><span class="n">cs</span><span class="o">.</span><span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">U</span><span class="p">[</span><span class="n">i</span><span class="p">,:],</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span><span class="s1">&#39;-&#39;</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;u&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">)</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;control&#39;</span><span class="p">)</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
+</div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span><span class="o">==</span><span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+
+    <span class="c1"># multipoint_simulation-casadi</span>
+    <span class="n">a</span><span class="o">=</span><span class="n">Simulate</span><span class="p">(</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+    <span class="n">a</span><span class="o">.</span><span class="n">set_grid</span><span class="p">(</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(</span><span class="mi">25</span><span class="p">))</span>
+    <span class="n">f</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">vertcat</span><span class="p">((</span><span class="mi">1</span><span class="o">-</span><span class="n">a</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">a</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">a</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">a</span><span class="o">.</span><span class="n">u</span><span class="p">,</span><span class="n">a</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">+</span><span class="n">a</span><span class="o">.</span><span class="n">p</span>
+    <span class="n">a</span><span class="o">.</span><span class="n">set_ode</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="n">x0</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">DM</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">a</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="n">X0</span><span class="o">=</span><span class="n">x0</span><span class="p">,</span><span class="n">U</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">25</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">P</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">DM</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+    <span class="n">r</span><span class="o">=</span><span class="n">a</span><span class="o">.</span><span class="n">r</span>
+    <span class="n">t</span><span class="o">=</span><span class="n">a</span><span class="o">.</span><span class="n">t_grid</span>
+    <span class="n">a</span><span class="o">.</span><span class="n">plot_sol</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;xf&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+    <span class="c1">#t**2</span>
+    <span class="n">b</span><span class="o">=</span><span class="n">Simulate</span><span class="p">(</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">set_grid</span><span class="p">(</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(</span><span class="mi">100000</span><span class="p">))</span>
+    <span class="n">f</span><span class="o">=</span><span class="mi">2</span><span class="o">*</span><span class="n">b</span><span class="o">.</span><span class="n">t</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">set_ode</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="n">x0</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">DM</span><span class="p">([</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="n">x0</span><span class="p">)</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">plot_sol</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Global error x(N+1) for xdot=2t:&#39;</span><span class="p">,</span><span class="n">cs</span><span class="o">.</span><span class="n">evalf</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;xf&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="mi">100</span><span class="p">))</span>
+
+    <span class="c1">#lotka voltera/prey predator</span>
+    <span class="n">d</span><span class="o">=</span><span class="n">Simulate</span><span class="p">(</span><span class="n">n_x</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span><span class="n">n_p</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+    <span class="n">d</span><span class="o">.</span><span class="n">set_grid</span><span class="p">(</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(</span><span class="mi">15</span><span class="p">),</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(</span><span class="mi">1000</span><span class="p">))</span>
+    <span class="n">f</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">vertcat</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">d</span><span class="o">.</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">d</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">d</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="o">-</span><span class="n">d</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">d</span><span class="o">.</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">d</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">d</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">d</span><span class="o">.</span><span class="n">set_ode</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="n">x0</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">DM</span><span class="p">([</span><span class="mi">20</span><span class="p">,</span><span class="mi">20</span><span class="p">])</span>
+    <span class="n">p</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">DM</span><span class="p">([</span><span class="mf">0.01</span><span class="p">,</span><span class="mf">0.02</span><span class="p">])</span>
+    <span class="n">d</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="n">X0</span><span class="o">=</span><span class="n">x0</span><span class="p">,</span><span class="n">P</span><span class="o">=</span><span class="n">p</span><span class="p">,</span><span class="n">tol</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">)</span>
+    <span class="c1">#d.plot_sol()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">cs</span><span class="o">.</span><span class="n">evalf</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;xf&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">,:]),</span><span class="n">cs</span><span class="o">.</span><span class="n">evalf</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;xf&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">,:]),</span><span class="s1">&#39;o&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+    <span class="c1">#</span>
+    <span class="n">e</span><span class="o">=</span><span class="n">Simulate</span><span class="p">(</span><span class="n">n_x</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="n">n_u</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="n">n_p</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+    <span class="n">e</span><span class="o">.</span><span class="n">set_grid</span><span class="p">(</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(</span><span class="mi">15</span><span class="p">),</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(</span><span class="mi">1000</span><span class="p">))</span>
+    <span class="n">f</span><span class="o">=</span><span class="n">e</span><span class="o">.</span><span class="n">p</span><span class="o">*</span><span class="n">e</span><span class="o">.</span><span class="n">x</span><span class="o">+</span><span class="n">cs</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mf">0.01</span><span class="o">*</span><span class="n">e</span><span class="o">.</span><span class="n">t</span><span class="p">)</span><span class="o">*</span><span class="n">e</span><span class="o">.</span><span class="n">u</span>
+    <span class="n">e</span><span class="o">.</span><span class="n">set_ode</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="n">x0</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">DM</span><span class="p">([</span><span class="mi">20</span><span class="p">])</span>
+    <span class="n">p</span><span class="o">=-</span><span class="n">cs</span><span class="o">.</span><span class="n">DM</span><span class="p">([</span><span class="mf">0.1</span><span class="p">])</span>
+    <span class="n">u</span><span class="o">=</span><span class="mi">5</span><span class="o">*</span><span class="n">cs</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">1</span><span class="o">*</span><span class="n">cs</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">15</span><span class="p">,</span><span class="mi">1000</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+    <span class="n">e</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="n">X0</span><span class="o">=</span><span class="n">x0</span><span class="p">,</span><span class="n">U</span><span class="o">=</span><span class="n">u</span><span class="p">,</span><span class="n">P</span><span class="o">=</span><span class="n">p</span><span class="p">)</span>
+    <span class="n">e</span><span class="o">.</span><span class="n">plot_sol</span><span class="p">()</span>
+
+    <span class="c1">#symbolic integrator function</span>
+    <span class="n">c</span><span class="o">=</span><span class="n">Simulate</span><span class="p">(</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+    <span class="n">c</span><span class="o">.</span><span class="n">set_grid</span><span class="p">(</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="o">.</span><span class="n">sym</span><span class="p">(</span><span class="s1">&#39;tf&#39;</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="o">.</span><span class="n">sym</span><span class="p">(</span><span class="s1">&#39;tf&#39;</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
+    <span class="n">f</span><span class="o">=</span><span class="mi">2</span><span class="o">*</span><span class="n">c</span><span class="o">.</span><span class="n">t</span><span class="o">+</span><span class="n">c</span><span class="o">.</span><span class="n">u</span>
+    <span class="n">c</span><span class="o">.</span><span class="n">set_ode</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="n">x0</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">DM</span><span class="p">([</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">c</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="o">.</span><span class="n">sym</span><span class="p">(</span><span class="s1">&#39;u&#39;</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">plot_sol</span><span class="p">()</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Error catched for plotting symbolic&#39;</span><span class="p">)</span>    
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">simulatetraj</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2024, R Sandeepkumar.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.2.6</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

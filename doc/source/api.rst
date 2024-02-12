@@ -1,0 +1,2 @@
+.. autoclass:: simulatetraj.Simulate
+   :members:

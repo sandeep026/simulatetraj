@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="python" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ODE 1 &mdash; simulatetraj 2024 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/plot_directive.css?v=7f9a90b1" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=a22594b3"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Matthew Kelly: An Introduction to Trajectory Optimization: How to Do Your Own Direct Collocation" href="examples/block_optimal.html" />
+    <link rel="prev" title="Introduction" href="intro.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            simulatetraj
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Introduction:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html#dependencies">Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html#installation">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html#limitations">Limitations</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">ODE 1</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#elimination">Elimination</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#without-control-elimination">without control elimination</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#ode-2">ODE 2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#lotka-voltera-prey-predator-model">Lotka voltera/prey-predator model</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Optimal control:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="examples/block_optimal.html">Matthew Kelly: An Introduction to Trajectory Optimization: How to Do Your Own Direct Collocation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/larson.html">B. A. Conway¤ and K. M. Larson : Collocation Versus Differential Inclusion in Direct Optimization</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">simulatetraj</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">ODE 1</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/eg.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <p>Consider the initial value problem given below where the behaviour of
+the system is studied with respect to given set of inputs and initial
+condition. Lets make it parameteric by adding a scalar parameter to the
+ode and setting its value to zero.</p>
+<section id="ode-1">
+<h1>ODE 1<a class="headerlink" href="#ode-1" title="Link to this heading"></a></h1>
+<div class="math notranslate nohighlight">
+\begin{aligned}
+(t_0,t_f,N)&amp;=(0,10,25)\\
+x(t_0)&amp;=\begin{bmatrix}
+0\\
+0
+\end{bmatrix} \\
+u(t)&amp;=0.2t-1\\
+p&amp;=0\\
+\begin{bmatrix}
+\dot{x}_0\\
+\dot{x}_1
+\end{bmatrix}&amp;=
+\begin{bmatrix}
+(1-x_1^2)x_0-x_1+u\\
+x_0
+\end{bmatrix}+p
+\end{aligned}</div><p>The problem can be solved in 2 ways using Simulate.</p>
+<ol class="arabic simple">
+<li><p>eliminate controls from the ode</p></li>
+<li><p>supply controls evaluated on the grid points</p></li>
+</ol>
+<section id="elimination">
+<h2>Elimination<a class="headerlink" href="#elimination" title="Link to this heading"></a></h2>
+<p>Define the number of states and parameter by calling the constructor of
+the Simulate class. Both the methods are equivalent. Skipping an
+argument simply sets it to zero.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">a</span><span class="o">=</span><span class="n">Simulate</span><span class="p">(</span><span class="n">n_x</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span><span class="n">n_p</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">a</span><span class="o">=</span><span class="n">Simulate</span><span class="p">(</span><span class="n">n_x</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span><span class="n">n_u</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="n">n_p</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Once the states, controls and parameters are defined, set the numerical
+grid for integration. The state vector will be computed at these time
+points. tini, tfin and N are the initial time, final time and number of
+intervals, respectively.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">a</span><span class="o">.</span><span class="n">set_grid</span><span class="p">(</span><span class="n">tini</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="n">tfin</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span><span class="n">N</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(</span><span class="mi">25</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>The Simulate class has symbolic attributes for the state, control and
+parameter vector (t,x,u,p) which can be used to define the dynamics of
+the system. These are MX symbolics offered by casadi. If nonlinear
+functions like trignometric function are to be applied, they must be
+imported from the casadi namespace.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">f</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">vertcat</span><span class="p">((</span><span class="mi">1</span><span class="o">-</span><span class="n">a</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">a</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">a</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mf">0.2</span><span class="o">*</span><span class="n">a</span><span class="o">.</span><span class="n">t</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">a</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">+</span><span class="n">a</span><span class="o">.</span><span class="n">p</span>
+<span class="n">a</span><span class="o">.</span><span class="n">set_ode</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Set the initial condition and parameter value and solve the initial
+value problem. t is the time grid and a.r['xf'] has the state values at
+the grid point except for the initial time.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">x0</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">DM</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">a</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="n">X0</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">horzcat</span><span class="p">(</span><span class="n">x0</span><span class="p">),</span><span class="n">P</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">DM</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+<span class="n">r</span><span class="o">=</span><span class="n">a</span><span class="o">.</span><span class="n">r</span>
+<span class="n">t</span><span class="o">=</span><span class="n">a</span><span class="o">.</span><span class="n">t_grid</span>
+</pre></div>
+</div>
+<p>Plot the state and control time histories.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">a</span><span class="o">.</span><span class="n">plot_sol</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="Alternate text" src="_images/image.png" />
+<img alt="Alternate text" src="_images/image-1.png" />
+</section>
+<section id="without-control-elimination">
+<h2>without control elimination<a class="headerlink" href="#without-control-elimination" title="Link to this heading"></a></h2>
+<p>The control input is approximated as a piecewise constant function.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">a</span><span class="o">=</span><span class="n">Simulate</span><span class="p">(</span><span class="n">n_x</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span><span class="n">n_u</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="n">n_p</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">a</span><span class="o">.</span><span class="n">set_grid</span><span class="p">(</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(</span><span class="mi">25</span><span class="p">))</span>
+<span class="n">f</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">vertcat</span><span class="p">((</span><span class="mi">1</span><span class="o">-</span><span class="n">a</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">a</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">a</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">a</span><span class="o">.</span><span class="n">u</span><span class="p">,</span><span class="n">a</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">+</span><span class="n">a</span><span class="o">.</span><span class="n">p</span>
+<span class="n">a</span><span class="o">.</span><span class="n">set_ode</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+<span class="n">x0</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">DM</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">a</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="n">X0</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">horzcat</span><span class="p">(</span><span class="n">x0</span><span class="p">),</span><span class="n">U</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">25</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">P</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">DM</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+<span class="n">r</span><span class="o">=</span><span class="n">a</span><span class="o">.</span><span class="n">r</span>
+<span class="n">t</span><span class="o">=</span><span class="n">a</span><span class="o">.</span><span class="n">t_grid</span>
+<span class="n">a</span><span class="o">.</span><span class="n">plot_sol</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="Alternate text" src="_images/image-4.png" />
+<img alt="Alternate text" src="_images/image-5.png" />
+<img alt="Alternate text" src="_images/image-2.png" />
+</section>
+</section>
+<section id="ode-2">
+<h1>ODE 2<a class="headerlink" href="#ode-2" title="Link to this heading"></a></h1>
+<div class="math notranslate nohighlight">
+\begin{aligned}
+(t_0,t_f,N)&amp;=(0,10,100000)\\
+x(t_0)&amp;=0\\
+\dot{x}&amp;=2t
+\end{aligned}</div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">b</span><span class="o">=</span><span class="n">Simulate</span><span class="p">(</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">b</span><span class="o">.</span><span class="n">set_grid</span><span class="p">(</span><span class="n">tini</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="n">tfin</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span><span class="n">N</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(</span><span class="mi">100000</span><span class="p">))</span>
+<span class="n">f</span><span class="o">=</span><span class="mi">2</span><span class="o">*</span><span class="n">b</span><span class="o">.</span><span class="n">t</span>
+<span class="n">b</span><span class="o">.</span><span class="n">set_ode</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+<span class="n">x0</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">DM</span><span class="p">([</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">b</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="n">x0</span><span class="p">)</span>
+<span class="n">b</span><span class="o">.</span><span class="n">plot_sol</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Global error x(N+1) for xdot=2t:&#39;</span><span class="p">,</span><span class="n">cs</span><span class="o">.</span><span class="n">evalf</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;xf&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="mi">100</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Global<span class="w"> </span>error<span class="w"> </span>x<span class="o">(</span>N+1<span class="o">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nv">xdot</span><span class="o">=</span>2t:<span class="w"> </span><span class="m">0</span>.0016011
+</pre></div>
+</div>
+<img alt="Alternate text" src="_images/image-6.png" />
+<p>The default values for cvodes is 0.001 and 0.1 for absolute and relative
+tolerance, respectively. By increasing the tolerance global error can be
+reduced.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">b</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span><span class="n">tol</span><span class="o">=</span><span class="mf">1e-12</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Global<span class="w"> </span>error<span class="w"> </span>x<span class="o">(</span>N+1<span class="o">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nv">xdot</span><span class="o">=</span>2t:<span class="w"> </span><span class="m">4</span>.81748e-12
+</pre></div>
+</div>
+</section>
+<section id="lotka-voltera-prey-predator-model">
+<h1>Lotka voltera/prey-predator model<a class="headerlink" href="#lotka-voltera-prey-predator-model" title="Link to this heading"></a></h1>
+<div class="math notranslate nohighlight">
+\begin{aligned}
+(t_0,t_f,N)&amp;=(0,15,1000)\\
+(\alpha,\beta)&amp;=(0.01,0.02)\\
+x(t_0)&amp;=
+\begin{bmatrix}
+20\\
+20
+\end{bmatrix}\\
+\begin{bmatrix}
+\dot{x}_0\\
+\dot{x}_1
+\end{bmatrix}&amp;=
+\begin{bmatrix}
+x_0-\alpha x_0 x_1\\
+-x_1+\beta x_0 x_1
+\end{bmatrix}
+\end{aligned}</div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">d</span><span class="o">=</span><span class="n">Simulate</span><span class="p">(</span><span class="n">n_x</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span><span class="n">n_p</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+<span class="n">d</span><span class="o">.</span><span class="n">set_grid</span><span class="p">(</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(</span><span class="mi">15</span><span class="p">),</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(</span><span class="mi">1000</span><span class="p">))</span>
+<span class="n">f</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">vertcat</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">d</span><span class="o">.</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">d</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">d</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="o">-</span><span class="n">d</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">d</span><span class="o">.</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">d</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">d</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">d</span><span class="o">.</span><span class="n">set_ode</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+<span class="n">x0</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">DM</span><span class="p">([</span><span class="mi">20</span><span class="p">,</span><span class="mi">20</span><span class="p">])</span>
+<span class="n">p</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">DM</span><span class="p">([</span><span class="mf">0.01</span><span class="p">,</span><span class="mf">0.02</span><span class="p">])</span>
+<span class="n">d</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="n">X0</span><span class="o">=</span><span class="n">x0</span><span class="p">,</span><span class="n">P</span><span class="o">=</span><span class="n">p</span><span class="p">,</span><span class="n">tol</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">)</span>
+<span class="c1">#d.plot_sol()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">cs</span><span class="o">.</span><span class="n">evalf</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;xf&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">,:]),</span><span class="n">cs</span><span class="o">.</span><span class="n">evalf</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;xf&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">,:]),</span><span class="s1">&#39;o&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="Alternate text" src="_images/image-7.png" />
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="intro.html" class="btn btn-neutral float-left" title="Introduction" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="examples/block_optimal.html" class="btn btn-neutral float-right" title="Matthew Kelly: An Introduction to Trajectory Optimization: How to Do Your Own Direct Collocation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, R Sandeepkumar.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

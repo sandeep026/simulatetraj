@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="python" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>&lt;no title&gt; &mdash; simulatetraj 2024 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/plot_directive.css?v=7f9a90b1" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=a22594b3"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="B. A. Conway¤ and K. M. Larson : Collocation Versus Differential Inclusion in Direct Optimization" href="examples/larson.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            simulatetraj
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Introduction:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html#dependencies">Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html#installation">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html#limitations">Limitations</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="eg.html">ODE 1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="eg.html#ode-2">ODE 2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="eg.html#lotka-voltera-prey-predator-model">Lotka voltera/prey-predator model</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Trajectory optimization:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="opti.html">Advanced</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/block_optimal.html">Matthew Kelly: An Introduction to Trajectory Optimization: How to Do Your Own Direct Collocation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/larson.html">B. A. Conway¤ and K. M. Larson : Collocation Versus Differential Inclusion in Direct Optimization</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">Simulate</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#simulatetraj.Simulate.tau"><code class="docutils literal notranslate"><span class="pre">Simulate.tau</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#simulatetraj.Simulate.t0"><code class="docutils literal notranslate"><span class="pre">Simulate.t0</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#simulatetraj.Simulate.tf"><code class="docutils literal notranslate"><span class="pre">Simulate.tf</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#simulatetraj.Simulate.t"><code class="docutils literal notranslate"><span class="pre">Simulate.t</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#simulatetraj.Simulate.N"><code class="docutils literal notranslate"><span class="pre">Simulate.N</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#simulatetraj.Simulate.t_grid_s"><code class="docutils literal notranslate"><span class="pre">Simulate.t_grid_s</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#simulatetraj.Simulate.t_grid"><code class="docutils literal notranslate"><span class="pre">Simulate.t_grid</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#simulatetraj.Simulate.f_s"><code class="docutils literal notranslate"><span class="pre">Simulate.f_s</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#simulatetraj.Simulate.x_n"><code class="docutils literal notranslate"><span class="pre">Simulate.x_n</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#simulatetraj.Simulate.x0"><code class="docutils literal notranslate"><span class="pre">Simulate.x0</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#simulatetraj.Simulate.r"><code class="docutils literal notranslate"><span class="pre">Simulate.r</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#simulatetraj.Simulate.pt_val"><code class="docutils literal notranslate"><span class="pre">Simulate.pt_val</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#simulatetraj.Simulate.plot_sol"><code class="docutils literal notranslate"><span class="pre">Simulate.plot_sol()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#simulatetraj.Simulate.set_grid"><code class="docutils literal notranslate"><span class="pre">Simulate.set_grid()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#simulatetraj.Simulate.set_ode"><code class="docutils literal notranslate"><span class="pre">Simulate.set_ode()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#simulatetraj.Simulate.start"><code class="docutils literal notranslate"><span class="pre">Simulate.start()</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">simulatetraj</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">&lt;no title&gt;</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/api.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <dl class="py class">
+<dt class="sig sig-object py" id="simulatetraj.Simulate">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">simulatetraj.</span></span><span class="sig-name descname"><span class="pre">Simulate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">MX</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_u</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">MX</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">MX(0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_p</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">MX</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">MX(0)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simulatetraj/simulate.html#Simulate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulatetraj.Simulate" title="Link to this definition"></a></dt>
+<dd><p>A class to numerically solve initial value problem using CVODES.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simulatetraj.Simulate.tau">
+<span class="sig-name descname"><span class="pre">tau</span></span><a class="headerlink" href="#simulatetraj.Simulate.tau" title="Link to this definition"></a></dt>
+<dd><p>scaled time domain variable</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>cs.MX</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simulatetraj.Simulate.t0">
+<span class="sig-name descname"><span class="pre">t0</span></span><a class="headerlink" href="#simulatetraj.Simulate.t0" title="Link to this definition"></a></dt>
+<dd><p>initial time</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>cs.MX</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simulatetraj.Simulate.tf">
+<span class="sig-name descname"><span class="pre">tf</span></span><a class="headerlink" href="#simulatetraj.Simulate.tf" title="Link to this definition"></a></dt>
+<dd><p>final time</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>cs.MX</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simulatetraj.Simulate.t">
+<span class="sig-name descname"><span class="pre">t</span></span><a class="headerlink" href="#simulatetraj.Simulate.t" title="Link to this definition"></a></dt>
+<dd><p>time domain variable</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>cs.MX</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simulatetraj.Simulate.N">
+<span class="sig-name descname"><span class="pre">N</span></span><a class="headerlink" href="#simulatetraj.Simulate.N" title="Link to this definition"></a></dt>
+<dd><p>number of intervals</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>cs.MX</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simulatetraj.Simulate.t_grid_s">
+<span class="sig-name descname"><span class="pre">t_grid_s</span></span><a class="headerlink" href="#simulatetraj.Simulate.t_grid_s" title="Link to this definition"></a></dt>
+<dd><p>discrete scaled grid</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>cs.MX</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simulatetraj.Simulate.t_grid">
+<span class="sig-name descname"><span class="pre">t_grid</span></span><a class="headerlink" href="#simulatetraj.Simulate.t_grid" title="Link to this definition"></a></dt>
+<dd><p>discrete grid</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>cs.MX</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simulatetraj.Simulate.f_s">
+<span class="sig-name descname"><span class="pre">f_s</span></span><a class="headerlink" href="#simulatetraj.Simulate.f_s" title="Link to this definition"></a></dt>
+<dd><p>scaled dynamics</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>cs.MX</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simulatetraj.Simulate.x_n">
+<span class="sig-name descname"><span class="pre">x_n</span></span><a class="headerlink" href="#simulatetraj.Simulate.x_n" title="Link to this definition"></a></dt>
+<dd><p>function object for the integrator</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>cs.Function</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simulatetraj.Simulate.x0">
+<span class="sig-name descname"><span class="pre">x0</span></span><a class="headerlink" href="#simulatetraj.Simulate.x0" title="Link to this definition"></a></dt>
+<dd><p>initial state</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>cs.MX</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simulatetraj.Simulate.r">
+<span class="sig-name descname"><span class="pre">r</span></span><a class="headerlink" href="#simulatetraj.Simulate.r" title="Link to this definition"></a></dt>
+<dd><p>dictionary of results from integration</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="simulatetraj.Simulate.pt_val">
+<span class="sig-name descname"><span class="pre">pt_val</span></span><a class="headerlink" href="#simulatetraj.Simulate.pt_val" title="Link to this definition"></a></dt>
+<dd><p>numerical value of the parameter vector</p>
+</dd></dl>
+
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n_x</strong> (<em>cs.MX</em>) -- number of states</p></li>
+<li><p><strong>n_u</strong> (<em>cs.MX</em><em>, </em><em>optional</em>) -- number of controls, by default cs.MX(0)</p></li>
+<li><p><strong>n_p</strong> (<em>cs.MX</em><em>, </em><em>optional</em>) -- number of parameters, by default cs.MX(0)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ValueError</strong> -- input should not be less than or equal to zero</p></li>
+<li><p><strong>TypeError</strong> -- input must be an integer</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">simulate</span> <span class="kn">import</span> <span class="n">Simulate</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">casadi</span> <span class="k">as</span> <span class="nn">cs</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">=</span><span class="n">Simulate</span><span class="p">(</span><span class="n">n_x</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span><span class="n">n_u</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="n">n_p</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="simulatetraj.Simulate.plot_sol">
+<span class="sig-name descname"><span class="pre">plot_sol</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/simulatetraj/simulate.html#Simulate.plot_sol"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulatetraj.Simulate.plot_sol" title="Link to this definition"></a></dt>
+<dd><p>Plots the solution obtained.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ValueError</strong> -- No plots for symbolic maps</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="simulatetraj.Simulate.set_grid">
+<span class="sig-name descname"><span class="pre">set_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tini</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">MX</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tfin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">MX</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">MX</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simulatetraj/simulate.html#Simulate.set_grid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulatetraj.Simulate.set_grid" title="Link to this definition"></a></dt>
+<dd><p>Define the time grid for numerical integration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tini</strong> (<em>cs.MX</em>) -- initial time</p></li>
+<li><p><strong>tfin</strong> (<em>cs.MX</em>) -- final time</p></li>
+<li><p><strong>N</strong> (<em>cs.MX</em>) -- number of intervals</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ValueError</strong> -- N must not be less than or equal to 1</p></li>
+<li><p><strong>TypeError</strong> -- N must be a integer</p></li>
+<li><p><strong>ValueError</strong> -- Time must be positive</p></li>
+<li><p><strong>ValueError</strong> -- Final time must be greater than initial time</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">set_grid</span><span class="p">(</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(</span><span class="mi">25</span><span class="p">))</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="simulatetraj.Simulate.set_ode">
+<span class="sig-name descname"><span class="pre">set_ode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simulatetraj/simulate.html#Simulate.set_ode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulatetraj.Simulate.set_ode" title="Link to this definition"></a></dt>
+<dd><p>Define the state derivative vector</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>f</strong> (<em>cs.MX</em>) -- expression for the state derivative</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">vertcat</span><span class="p">((</span><span class="mi">1</span><span class="o">-</span><span class="n">a</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">a</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">a</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">a</span><span class="o">.</span><span class="n">u</span><span class="p">,</span><span class="n">a</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">+</span><span class="n">a</span><span class="o">.</span><span class="n">p</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">set_ode</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="simulatetraj.Simulate.start">
+<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DM</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">MX</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">U</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DM</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">MX</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">MX(0x0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">P</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DM</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">MX</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">MX(0x0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.001</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/simulatetraj/simulate.html#Simulate.start"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#simulatetraj.Simulate.start" title="Link to this definition"></a></dt>
+<dd><p>Simulate the dynamics with initial condition with x0, control input u and parameter p
+using CVODES.</p>
+<p>(abstol,reltol)=(tol,100*tol)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X0</strong> (<em>cs.DM</em><em> | </em><em>cs.MX</em>) -- initial condition for the state</p></li>
+<li><p><strong>U</strong> (<em>cs.DM</em><em> | </em><em>cs.MX</em><em>, </em><em>optional</em>) -- control input, by default None</p></li>
+<li><p><strong>P</strong> (<em>cs.DM</em><em> | </em><em>cs.MX</em><em>, </em><em>optional</em>) -- parameter vector, by default None</p></li>
+<li><p><strong>tol</strong> (<em>float</em>) -- tolerance for CVODES, by default 1e-3</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>TypeError</strong> -- x0 must be of type MX/DM</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x0</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">DM</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="n">X0</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">horzcat</span><span class="p">(</span><span class="n">x0</span><span class="p">),</span><span class="n">U</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">25</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">P</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">DM</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span><span class="o">=</span><span class="n">a</span><span class="o">.</span><span class="n">r</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">=</span><span class="n">a</span><span class="o">.</span><span class="n">t_grid</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="examples/larson.html" class="btn btn-neutral float-left" title="B. A. Conway¤ and K. M. Larson : Collocation Versus Differential Inclusion in Direct Optimization" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, R Sandeepkumar.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

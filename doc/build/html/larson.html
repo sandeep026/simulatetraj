@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="python" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>B. A. Conway¤ and K. M. Larson : Collocation Versus Differential Inclusion in Direct Optimization &mdash; simulatetraj 2024 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/plot_directive.css?v=7f9a90b1" />
+      <link rel="stylesheet" type="text/css" href="_static/nbsphinx-code-cells.css?v=2aa19091" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=a22594b3"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            simulatetraj
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">B. A. Conway¤ and K. M. Larson : Collocation Versus Differential Inclusion in Direct Optimization</a></li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">simulatetraj</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">B. A. Conway¤ and K. M. Larson : Collocation Versus Differential Inclusion in Direct Optimization</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/larson.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="B.-A.-Conway¤-and-K.-M.-Larson-:-Collocation-Versus-Differential-Inclusion-in-Direct-Optimization">
+<h1>B. A. Conway¤ and K. M. Larson : Collocation Versus Differential Inclusion in Direct Optimization<a class="headerlink" href="#B.-A.-Conway¤-and-K.-M.-Larson-:-Collocation-Versus-Differential-Inclusion-in-Direct-Optimization" title="Link to this heading"></a></h1>
+<ul class="simple">
+<li><p>import the packages</p></li>
+<li><p>single shooting</p></li>
+</ul>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">simulatetraj</span> <span class="kn">import</span> <span class="n">Simulate</span>
+<span class="kn">import</span> <span class="nn">casadi</span> <span class="k">as</span> <span class="nn">cs</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+</pre></div>
+</div>
+</div>
+<ul class="simple">
+<li><p>create a simulate object and define the dynamics</p></li>
+<li><p>set the number of control intervals</p></li>
+<li><p>specify BCs for the OCP</p></li>
+</ul>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">a</span><span class="o">=</span><span class="n">Simulate</span><span class="p">(</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+<span class="n">f</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">vertcat</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="o">-</span><span class="n">a</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">a</span><span class="o">.</span><span class="n">u</span><span class="p">)</span>
+<span class="n">a</span><span class="o">.</span><span class="n">set_ode</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+<span class="n">N</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
+<span class="n">a</span><span class="o">.</span><span class="n">set_grid</span><span class="p">(</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span><span class="n">N</span><span class="p">)</span>
+<span class="n">x0</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">DM</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<ul class="simple">
+<li><p>create opti object</p></li>
+<li><p>write code for single shooting transcription</p></li>
+<li><p>initial guess for NLP</p></li>
+<li><p>solve using IPOPT and plot</p></li>
+</ul>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">nlp</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">Opti</span><span class="p">()</span>
+<span class="n">X0</span><span class="o">=</span><span class="n">nlp</span><span class="o">.</span><span class="n">variable</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">cs</span><span class="o">.</span><span class="n">evalf</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">n_x</span><span class="p">)),</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">U</span><span class="o">=</span><span class="n">nlp</span><span class="o">.</span><span class="n">variable</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">cs</span><span class="o">.</span><span class="n">evalf</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">n_u</span><span class="p">)),</span><span class="nb">int</span><span class="p">(</span><span class="n">cs</span><span class="o">.</span><span class="n">evalf</span><span class="p">(</span><span class="n">N</span><span class="p">)))</span>
+<span class="n">obj</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">sumsqr</span><span class="p">(</span><span class="n">U</span><span class="p">)</span><span class="o">*</span><span class="mi">2</span><span class="o">/</span><span class="n">N</span>
+<span class="n">a</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="n">X0</span><span class="o">=</span><span class="n">x0</span><span class="p">,</span><span class="n">U</span><span class="o">=</span><span class="n">U</span><span class="p">,</span><span class="n">tol</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">)</span>
+<span class="n">X</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">horzcat</span><span class="p">(</span><span class="n">X0</span><span class="p">,</span><span class="n">a</span><span class="o">.</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;xf&#39;</span><span class="p">])</span>
+<span class="n">nlp</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+<span class="n">nlp</span><span class="o">.</span><span class="n">subject_to</span><span class="p">(</span><span class="n">X0</span><span class="o">-</span><span class="n">x0</span><span class="o">==</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">nlp</span><span class="o">.</span><span class="n">subject_to</span><span class="p">(</span><span class="n">cs</span><span class="o">.</span><span class="n">horzcat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mf">2.694528</span><span class="p">)</span><span class="nd">@X</span><span class="p">[:,</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mf">1.155356</span><span class="o">==</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">nlp</span><span class="o">.</span><span class="n">solver</span><span class="p">(</span><span class="s1">&#39;ipopt&#39;</span><span class="p">)</span>
+<span class="n">nlp</span><span class="o">.</span><span class="n">set_initial</span><span class="p">(</span><span class="n">U</span><span class="p">,</span><span class="n">cs</span><span class="o">.</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="nb">int</span><span class="p">(</span><span class="n">cs</span><span class="o">.</span><span class="n">evalf</span><span class="p">(</span><span class="n">N</span><span class="p">))))</span>
+<span class="n">sol</span><span class="o">=</span><span class="n">nlp</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+<span class="n">obj_val</span><span class="o">=</span><span class="n">sol</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">nlp</span><span class="o">.</span><span class="n">f</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Objective value: Paper - 0.577678 | code - </span><span class="si">{</span><span class="n">obj_val</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+This is Ipopt version 3.14.11, running with linear solver MUMPS 5.4.1.
+
+Number of nonzeros in equality constraint Jacobian...:       52
+Number of nonzeros in inequality constraint Jacobian.:        0
+Number of nonzeros in Lagrangian Hessian.............:       50
+
+Total number of variables............................:       52
+                     variables with only lower bounds:        0
+                variables with lower and upper bounds:        0
+                     variables with only upper bounds:        0
+Total number of equality constraints.................:        3
+Total number of inequality constraints...............:        0
+        inequality constraints with only lower bounds:        0
+   inequality constraints with lower and upper bounds:        0
+        inequality constraints with only upper bounds:        0
+
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+   0  6.7346939e-01 5.19e-02 2.75e-02  -1.0 0.00e+00    -  0.00e+00 0.00e+00   0
+   1  5.8170883e-01 2.61e-03 2.58e-05  -2.5 3.43e-01    -  1.00e+00 1.00e+00h  1
+   2  5.7909057e-01 2.25e-06 1.31e-05  -3.8 3.15e-03    -  1.00e+00 1.00e+00h  1
+   3  5.7908831e-01 9.61e-08 6.58e-08  -8.6 1.32e-04    -  1.00e+00 1.00e+00h  1
+   4  5.7908840e-01 1.32e-09 3.51e-10  -8.6 6.63e-07    -  1.00e+00 1.00e+00h  1
+
+Number of Iterations....: 4
+
+                                   (scaled)                 (unscaled)
+Objective...............:   5.7908840158805075e-01    5.7908840158805075e-01
+Dual infeasibility......:   3.5066183290410891e-10    3.5066183290410891e-10
+Constraint violation....:   1.3209149329895808e-09    1.3209149329895808e-09
+Variable bound violation:   0.0000000000000000e+00    0.0000000000000000e+00
+Complementarity.........:   0.0000000000000000e+00    0.0000000000000000e+00
+Overall NLP error.......:   1.3209149329895808e-09    1.3209149329895808e-09
+
+
+Number of objective function evaluations             = 5
+Number of objective gradient evaluations             = 5
+Number of equality constraint evaluations            = 5
+Number of inequality constraint evaluations          = 0
+Number of equality constraint Jacobian evaluations   = 5
+Number of inequality constraint Jacobian evaluations = 0
+Number of Lagrangian Hessian evaluations             = 4
+Total seconds in IPOPT                               = 0.047
+
+EXIT: Optimal Solution Found.
+      solver  :   t_proc      (avg)   t_wall      (avg)    n_eval
+       nlp_f  |        0 (       0)  11.00us (  2.20us)         5
+       nlp_g  |   5.00ms (  1.00ms)   4.73ms (946.20us)         5
+  nlp_grad_f  |   1.00ms (166.67us)  28.00us (  4.67us)         6
+  nlp_hess_l  |  23.00ms (  5.75ms)  21.65ms (  5.41ms)         4
+   nlp_jac_g  |  15.00ms (  2.50ms)  15.43ms (  2.57ms)         6
+       total  |  48.00ms ( 48.00ms)  47.67ms ( 47.67ms)         1
+Objective value: Paper - 0.577678 | code - 0.5790884015880507
+</pre></div></div>
+</div>
+<ul class="simple">
+<li><p>plot results</p></li>
+</ul>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">cs</span><span class="o">.</span><span class="n">evalf</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">t_grid</span><span class="p">)</span><span class="o">.</span><span class="n">full</span><span class="p">(),</span><span class="n">sol</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="mi">0</span><span class="p">,:]),</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;x_1&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">cs</span><span class="o">.</span><span class="n">evalf</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">t_grid</span><span class="p">)</span><span class="o">.</span><span class="n">full</span><span class="p">(),</span><span class="n">sol</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="mi">1</span><span class="p">,:]),</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;x_2&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">cs</span><span class="o">.</span><span class="n">evalf</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">t_grid</span><span class="p">)</span><span class="o">.</span><span class="n">full</span><span class="p">(),</span><span class="n">cs</span><span class="o">.</span><span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">cs</span><span class="o">.</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span><span class="n">sol</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">U</span><span class="p">))),</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;u&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/larson_8_0.png" src="_images/larson_8_0.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/larson_8_1.png" src="_images/larson_8_1.png" />
+</div>
+</div>
+<p>Note that the single shooting method is not robust and may be prone to failure. Multiple shooting methods are recommended.</p>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, R Sandeepkumar.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
