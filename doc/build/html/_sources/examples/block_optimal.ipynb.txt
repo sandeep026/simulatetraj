@@ -4,7 +4,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "### Optimal control problem 2\n",
+    "### Optimal control problem 1\n",
     "\n",
     "Matthew Kelly: An Introduction to Trajectory Optimization: How to Do Your Own Direct Collocation"
    ]
