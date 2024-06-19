@@ -1,26 +1,3 @@
-Problem
-=======
-
-Using simulatetraj, initial value problems can be solved numerically. In
-the backend, an adaptive numerical integration is performed using CVODES
-from the SUNDIALS suite.
-
-Given initial state :math:`x(t_0)=x_0` and control inputs :math:`u(t)` on :math:`t \in [t_0,t_f]`, 
-the state trajectory :math:`x(t)` is computed for the explicit
-differential equation :math:`\dot{x}=f(x,u,t,p)`.
-
-+------------+------------------+------------------------+
-|Symbol      | Description      |Dimensions              |
-+============+==================+========================+
-|:math:`x(t)`| State vector     |:math:`\mathbb{R}^{n_x}`|
-+------------+------------------+------------------------+
-|:math:`u(t)`| Control vector   |:math:`\mathbb{R}^{n_u}`|
-+------------+------------------+------------------------+
-|:math:`p`   | Parameter vector |:math:`\mathbb{R}^{n_p}`|
-+------------+------------------+------------------------+
-|:math:`t`   | time             |:math:`\mathbb{R}^{1}`  |
-+------------+------------------+------------------------+
-
 Dependencies
 ============
 

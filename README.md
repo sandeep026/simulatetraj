@@ -1,6 +1,6 @@
 # Simulate
 
-Using Simulate, initial value problems can be solved numerically. In the backend, an adaptive numerical integration is performed using CVODES from the SUNDIALS suite.
+Using simulatetraj, initial value problems can be solved numerically. In the backend, an adaptive numerical integration is performed using CVODES from the SUNDIALS suite.
 
 Given initial state $x(t_0)=x_0$ and control inputs $u(t)$ on $t \in [t_0,t_f]$, the state trajectory $x(t)$ is computed for the explicit differential equation $\dot{x}=f(x,u,t,p)$.
 
@@ -11,9 +11,15 @@ Given initial state $x(t_0)=x_0$ and control inputs $u(t)$ on $t \in [t_0,t_f]$,
 |$p$|Parameter vector| $\mathbb{R}^{n_p}$|
 |$t$|time| $\mathbb{R}^{1}$|
 
+## Dependencies
+
+* ```casadi==3.6.4```
+* ```matplotlib==3.8.2```
+* ```numpy==```
+
 ## Installation
 
-At the moment, the package is tested to run on Windows 10.
+At the moment, the package is tested and run on Windows 10.
 
 * Clone the repository or download zip
 * Open the folder with VScode
@@ -31,12 +37,6 @@ At the moment, the package is tested to run on Windows 10.
 * all dependencies and package will be installed
 
 Run the python notebooks from examples folder to verify the installation.
-
-## Dependencies
-
-* casadi
-* matplotlib
-* numpy
 
 ## Limitations
 

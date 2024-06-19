@@ -6,6 +6,26 @@
 Welcome to simulatetraj's documentation!
 ========================================
 
+Using simulatetraj, initial value problems can be solved numerically. In
+the backend, adaptive numerical integration using backward difference formula/Adam Moulton Bashfort method 
+is performed using CVODES from the SUNDIALS suite.
+
+Given initial state :math:`x(t_0)=x_0` and control inputs :math:`u(t)` on :math:`t \in [t_0,t_f]`, 
+the state trajectory :math:`x(t)` is computed for the explicit
+differential equation :math:`\dot{x}=f(x,u,t,p)`.
+
++------------+------------------+------------------------+
+|Symbol      | Description      |Dimensions              |
++============+==================+========================+
+|:math:`x(t)`| State vector     |:math:`\mathbb{R}^{n_x}`|
++------------+------------------+------------------------+
+|:math:`u(t)`| Control vector   |:math:`\mathbb{R}^{n_u}`|
++------------+------------------+------------------------+
+|:math:`p`   | Parameter vector |:math:`\mathbb{R}^{n_p}`|
++------------+------------------+------------------------+
+|:math:`t`   | time             |:math:`\mathbb{R}^{1}`  |
++------------+------------------+------------------------+
+
 .. toctree::
    :maxdepth: 2
    :caption: Introduction:

@@ -1,19 +1,24 @@
 [tool.poetry]
 name = "simulatetraj"
-version = "0.1.0"
-description = "A class to integrate ordinary differential equations using cvodes"
+version = "0.0.1"
+description = "a class to integrate ordinary differential equation"
 authors = ["sandeep <rskravi15@gmail.com>"]
+license = "LGPL V3"
 readme = "README.md"
-license = "LGPL-3.0-only"
 
 [tool.poetry.dependencies]
 python = "^3.11"
-casadi = "^3.6.4"
-matplotlib = "^3.8.2"
-ipykernel = "^6.29.1"
+casadi = "^3.6.5"
+matplotlib = "^3.9.0"
+scipy = "^1.13.1"
+numpy = "^2.0.0"
 
+[tool.poetry.group.dev.dependencies]
+jupyter = "^1.0.0"
+Sphinx = "^7.3.7"
+pipdeptree = "^2.23.0"
+ipykernel = "^6.29.4"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
-
