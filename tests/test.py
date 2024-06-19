@@ -1,4 +1,4 @@
-from simulate import Simulate
+from simulatetraj import Simulate
 import casadi as cs
 import matplotlib.pyplot as plt
 a=Simulate(n_x=cs.MX(2),n_p=cs.MX(1))
