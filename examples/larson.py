@@ -65,5 +65,3 @@ plt.show()
 
 # %% [markdown]
 # Note that the single shooting method is not robust and may be prone to failure. Multiple shooting methods are recommended.
-
-
