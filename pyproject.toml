@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "simulatetraj"
-version = "0.0.2"
+version = "0.0.3"
 description = "a class to integrate ordinary differential equation"
 authors = ["sandeep <rskravi15@gmail.com>"]
 license = "LGPL V3"

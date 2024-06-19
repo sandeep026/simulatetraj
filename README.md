@@ -13,40 +13,27 @@ Given initial state $x(t_0)=x_0$ and control inputs $u(t)$ on $t \in [t_0,t_f]$,
 
 ## Dependencies
 
-* ```casadi==3.6.4```
-* ```matplotlib==3.8.2```
+* ```casadi```
+* ```matplotlib```
 
 ## Installation
+Create a virtual environment and install the package using pip.
 
-At the moment, the package is tested and run on Windows 10.
+```
+python -m venv sim_env
+```
 
 ```
 pip install simulatetraj
 ```
 
-### venv
-
-* Create virtual environment using venv
-* All dependencies and package will be installed automatically
-
-### conda
-
-* create conda environment with python >=3.1
-* type ``` pip install poetry```
-* from the directory containing the toml file, type ``` poetry install```
-* all dependencies and package will be installed
-
-Run the python notebooks from examples folder to verify the installation.
-
-## Limitations
-
-* casadi based limitaions apply
+Run the scripts from examples folder to verify the installation.
 
 ## Usage
 
-Consider the initial value problem given below where the behaviour of the
+Consider the initial value problem given below where the behavior of the
 system is studied with respect to given set of inputs and initial condition.
-Lets make it parameteric by adding a scalar parameter to the ode and setting its value to zero.
+Lets make it parametric by adding a scalar parameter to the ode and setting its value to zero.
 
 ### ODE 1
 
