@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 class Simulate:
     '''
-    A class to numerically solve initial value problem using CVODES.
+    A class to numerically solve initial value problems using CVODES.
 
     Attributes
     ----------

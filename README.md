@@ -15,14 +15,14 @@ Given initial state $x(t_0)=x_0$ and control inputs $u(t)$ on $t \in [t_0,t_f]$,
 
 * ```casadi==3.6.4```
 * ```matplotlib==3.8.2```
-* ```numpy==```
 
 ## Installation
 
 At the moment, the package is tested and run on Windows 10.
 
-* Clone the repository or download zip
-* Open the folder with VScode
+```
+pip install simulatetraj
+```
 
 ### venv
 
