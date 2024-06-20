@@ -24,7 +24,6 @@ extensions = [
     "sphinx.ext.todo",
     "sphinx.ext.viewcode",
     "sphinx.ext.autodoc",
-    "sphinx_rtd_theme",
     'sphinx.ext.mathjax',
     'sphinx.ext.duration',
     'sphinx.ext.doctest',
@@ -42,5 +41,5 @@ language = 'python'
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
-html_theme = 'furo'
+html_theme = 'alabaster'
 html_static_path = ['_static']

@@ -7,11 +7,11 @@
     <title>simulatetraj.simulate &#8212; simulatetraj 2024 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=d1102ebc" />
     <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=12dfc556" />
-    <script src="../../_static/jquery.js?v=5d32c60e"></script>
-    <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css?v=7f9a90b1" />
     <script src="../../_static/documentation_options.js?v=a22594b3"></script>
-    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
    
@@ -36,10 +36,10 @@
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
 <div class="viewcode-block" id="Simulate">
-<a class="viewcode-back" href="../../index.html#simulatetraj.Simulate">[docs]</a>
+<a class="viewcode-back" href="../../api.html#simulatetraj.Simulate">[docs]</a>
 <span class="k">class</span> <span class="nc">Simulate</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    A class to numerically solve initial value problem using CVODES.</span>
+<span class="sd">    A class to numerically solve initial value problems using CVODES.</span>
 
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
@@ -159,7 +159,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">pt_val</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">()</span>
 
 <div class="viewcode-block" id="Simulate.set_grid">
-<a class="viewcode-back" href="../../index.html#simulatetraj.Simulate.set_grid">[docs]</a>
+<a class="viewcode-back" href="../../api.html#simulatetraj.Simulate.set_grid">[docs]</a>
     <span class="k">def</span> <span class="nf">set_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">tini</span><span class="p">:</span> <span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">,</span><span class="n">tfin</span><span class="p">:</span> <span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">,</span><span class="n">N</span><span class="p">:</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Define the time grid for numerical integration.</span>
@@ -224,7 +224,7 @@
 
 
 <div class="viewcode-block" id="Simulate.set_ode">
-<a class="viewcode-back" href="../../index.html#simulatetraj.Simulate.set_ode">[docs]</a>
+<a class="viewcode-back" href="../../api.html#simulatetraj.Simulate.set_ode">[docs]</a>
     <span class="k">def</span> <span class="nf">set_ode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">f</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Define the state derivative vector</span>
@@ -246,7 +246,7 @@
 
 
 <div class="viewcode-block" id="Simulate.start">
-<a class="viewcode-back" href="../../index.html#simulatetraj.Simulate.start">[docs]</a>
+<a class="viewcode-back" href="../../api.html#simulatetraj.Simulate.start">[docs]</a>
     <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">X0</span><span class="p">:</span><span class="n">cs</span><span class="o">.</span><span class="n">DM</span><span class="o">|</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">,</span><span class="n">U</span><span class="p">:</span><span class="n">cs</span><span class="o">.</span><span class="n">DM</span><span class="o">|</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(),</span><span class="n">P</span><span class="p">:</span><span class="n">cs</span><span class="o">.</span><span class="n">DM</span><span class="o">|</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(),</span><span class="n">tol</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Simulate the dynamics with initial condition with x0, control input u and parameter p</span>
@@ -320,7 +320,7 @@
 
 
 <div class="viewcode-block" id="Simulate.plot_sol">
-<a class="viewcode-back" href="../../index.html#simulatetraj.Simulate.plot_sol">[docs]</a>
+<a class="viewcode-back" href="../../api.html#simulatetraj.Simulate.plot_sol">[docs]</a>
     <span class="k">def</span> <span class="nf">plot_sol</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Plots the solution obtained.</span>
@@ -438,6 +438,28 @@
 
 
 <h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Introduction:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../intro.html">Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../intro.html#installation">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../intro.html#limitations">Limitations</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../eg.html">ODE 1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../eg.html#ode-2">ODE 2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../eg.html#lotka-voltera-prey-predator-model">Lotka voltera/prey-predator model</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Trajectory optimization:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../opti.html">Advanced</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/block_optimal.html">Optimal control problem 1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/larson.html">Optimal control problem 2</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html"><code class="docutils literal notranslate"><span class="pre">Simulate</span></code></a></li>
+</ul>
 
 <div class="relations">
 <h3>Related Topics</h3>
@@ -448,7 +470,7 @@
   </ul></li>
 </ul>
 </div>
-<div id="searchbox" style="display: none" role="search">
+<search id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
@@ -456,7 +478,7 @@
       <input type="submit" value="Go" />
     </form>
     </div>
-</div>
+</search>
 <script>document.getElementById('searchbox').style.display = "block"</script>
 
 
@@ -474,7 +496,7 @@
       &#169;2024, R Sandeepkumar.
       
       |
-      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.2.6</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.3.7</a>
       &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
       
     </div>

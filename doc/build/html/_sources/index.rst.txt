@@ -7,8 +7,9 @@ Welcome to simulatetraj's documentation!
 ========================================
 
 Using simulatetraj, initial value problems can be solved numerically. In
-the backend, an adaptive numerical integration is performed using CVODES
-from the SUNDIALS suite.
+the backend, adaptive numerical integration using backward difference formula/Adam Moulton Bashfort method 
+is performed using CVODES from the SUNDIALS suite. The implementation solely relies on CasADi's integrator
+class in the backend.
 
 Given initial state :math:`x(t_0)=x_0` and control inputs :math:`u(t)` on :math:`t \in [t_0,t_f]`, 
 the state trajectory :math:`x(t)` is computed for the explicit

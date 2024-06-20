@@ -18,6 +18,7 @@ jupyter = "^1.0.0"
 Sphinx = "^7.3.7"
 pipdeptree = "^2.23.0"
 ipykernel = "^6.29.4"
+nbsphinx = "^0.9.4"
 
 [build-system]
 requires = ["poetry-core"]

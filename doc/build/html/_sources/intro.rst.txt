@@ -1,49 +1,17 @@
-Dependencies
-============
-
-+-----------------+------------------+
-|Dependency       |Version           |
-+=================+==================+
-|python           | 3.11             |
-+-----------------+------------------+
-|casadi           | 3.6.4            |
-+-----------------+------------------+
-|matplotlib       | 3.8.2            |
-+-----------------+------------------+
-|ipykernel        |6.29.1            |
-+-----------------+------------------+
-|numpy            | 1.26.4           |
-+-----------------+------------------+
-|matplotlib-inline| 0.1.6            |
-+-----------------+------------------+
-
 Installation
 ============
 
-At the moment, the package is tested and run on Windows 10. Although not tested, the following dependencies
-are readily available in linux/macos and the package must be runnable.
+Create a virtual environment and install the package using pip.
 
--  Clone the repository or download zip
--  Open the folder with VScode
+.. code:: python
 
-venv
-----
+    python -m venv sim_env
 
--  Create virtual environment using venv
--  All dependencies and package will be installed automatically
 
-conda
------
+.. code:: python
+    
+    pip install simulatetraj
 
--  create conda environment with python >=3.1
--  type ``pip install poetry``
--  from the directory containing the toml file, type ``poetry install``
--  all dependencies and package will be installed
 
-Run the python notebooks from examples folder to verify the
-installation.
+Run the scripts from examples folder to verify the installation.
 
-Limitations
-===========
-
--  casadi based limitations apply
