@@ -7,4 +7,4 @@ build:
       - pip install poetry
       - poetry config virtualenvs.create false
     post_install:
-      - poetry install --with docs
+      - poetry install --with doc
