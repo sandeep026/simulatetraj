@@ -10,12 +10,6 @@ build:
       # https://python-poetry.org/docs/#installing-manually
       - pip install poetry
       - poetry install
-    post_install:
-      # Install dependencies with 'docs' dependency group
-      # https://python-poetry.org/docs/managing-dependencies/#dependency-groups
-      # VIRTUAL_ENV needs to be set manually for now.
-      # See https://github.com/readthedocs/readthedocs.org/pull/11152/
-      
 
 sphinx:
   configuration: doc/source/conf.py
