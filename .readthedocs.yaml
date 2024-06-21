@@ -4,9 +4,9 @@ build:
   os: ubuntu-22.04
   tools:
     python: "3.11"
+  apt_packages:
+    - pipx
   commands:
-    - apt update
-    - apt install pipx
     - pipx ensurepath
     - pipx ensurepath --global
     - pipx install poetry
