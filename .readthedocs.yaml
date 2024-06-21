@@ -27,6 +27,7 @@ build:
     post_create_environment:
       # Install poetry
       - pip install poetry
+      - pip install matplotlib
       # Tell poetry to not use a virtual environment
       - poetry config virtualenvs.create false
     post_install:
