@@ -13,11 +13,18 @@ matplotlib = "^3.9.0"
 scipy = "^1.13.1"
 numpy = "^2.0.0"
 
+[tool.poetry.group.dev]
+optional = true
+
 [tool.poetry.group.dev.dependencies]
 jupyter = "^1.0.0"
-Sphinx = "^7.3.7"
 pipdeptree = "^2.23.0"
-ipykernel = "^6.29.4"
+
+[tool.poetry.group.docs]
+optional=true
+
+[tool.poetry.group.docs.dependencies]
+Sphinx = "^7.3.7"
 nbsphinx = "^0.9.4"
 
 [build-system]
