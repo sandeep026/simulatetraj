@@ -1,11 +1,18 @@
+version: 2
+
 build:
   os: ubuntu-22.04
   tools:
-    python: "3.10"
-  jobs:
-    post_create_environment:
-      - pip install poetry
-      - poetry config virtualenvs.create false
-    post_install:
-      - poetry install 
-      - pip list
+    python: "3.11"
+  commands:
+    -sudo apt update
+    -sudo apt install pipx
+    -pipx ensurepath
+    -sudo pipx ensurepath --global
+    -pipx install poetry
+    -poetry install
+
+sphinx:
+  builder: html
+  configuration: doc/source/conf.py
+  fail_on_warning: true
