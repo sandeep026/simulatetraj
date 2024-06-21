@@ -28,6 +28,7 @@ build:
       # Install poetry
       - pip install poetry
       - pip install matplotlib
+      - pip install nbsphinx
       # Tell poetry to not use a virtual environment
       - poetry config virtualenvs.create false
     post_install:
