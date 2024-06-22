@@ -1,5 +1,7 @@
 # Simulate
 
+[![Documentation Status](https://readthedocs.org/projects/simulatetraj/badge/?version=latest)](https://simulatetraj.readthedocs.io/en/latest/?badge=latest)
+
 Using simulatetraj, initial value problems can be solved numerically. In the backend, an adaptive numerical integration is performed using CVODES from the SUNDIALS suite.
 
 Given initial state $x(t_0)=x_0$ and control inputs $u(t)$ on $t \in [t_0,t_f]$, the state trajectory $x(t)$ is computed for the explicit differential equation $\dot{x}=f(x,u,t,p)$.

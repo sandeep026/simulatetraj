@@ -1,10 +1,12 @@
 [tool.poetry]
 name = "simulatetraj"
-version = "0.0.3"
+version = "0.0.4"
 description = "a class to integrate ordinary differential equation"
 authors = ["sandeep <rskravi15@gmail.com>"]
 license = "LGPL V3"
 readme = "README.md"
+homepage = "http://simulatetraj.rtfd.io/"
+repository = "https://github.com/sandeep026/simulatetraj"
 
 [tool.poetry.dependencies]
 python = "^3.10"
@@ -30,3 +32,4 @@ nbsphinx = "^0.9.4"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
