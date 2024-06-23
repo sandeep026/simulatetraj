@@ -232,12 +232,12 @@ c.start(x0,cs.MX.sym('u',1,10))
 ```
 ### block 
 
-![image](\examples\box.svg)
+![image](examples/box.svg)
 
-![image](\examples\boc.svg)
+![image](examples/boc.svg)
 
 ### Larson
 
-![image](\examples\larx.svg)
+![image](examples/larx.svg)
 
-![image](\examples\laru.svg)
+![image](examples/laru.svg)
