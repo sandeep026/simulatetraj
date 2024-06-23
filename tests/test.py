@@ -46,7 +46,7 @@ x0=cs.DM([20,20])
 p=cs.DM([0.01,0.02])
 d.start(X0=x0,P=p,tol=1e-8)
 #d.plot_sol()
-plt.plot(cs.evalf(d.r['xf'][0,:]),cs.evalf(d.r['xf'][1,:]).full(),'o')
+plt.plot(cs.evalf(d.r['xf'][0,:]).full().flatten(),cs.evalf(d.r['xf'][1,:]).full().flatten(),'--')
 plt.show()
 #
 e=Simulate(n_x=cs.MX(1),n_u=cs.MX(1),n_p=cs.MX(1))
