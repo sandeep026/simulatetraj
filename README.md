@@ -19,6 +19,8 @@ Given initial state $x(t_0)=x_0$ and control inputs $u(t)$ on $t \in [t_0,t_f]$,
 * ```matplotlib```
 
 ## Installation
+
+### User
 Create a virtual environment and install the package using pip.
 
 ```
@@ -30,6 +32,21 @@ pip install simulatetraj
 ```
 
 Run the scripts from examples folder to verify the installation.
+
+### Developer
+
+Install poetry and clone the repository.
+
+```
+git clone https://github.com/sandeep026/simulatetraj.git
+```
+Install the packages using poetry
+
+```
+poetry install --with docs, dev
+```
+
+Poetry will either use an existing environment or will create a new one.
 
 ## Usage
 
