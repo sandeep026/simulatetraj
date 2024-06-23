@@ -122,8 +122,8 @@ Plot the state and control time histories.
 a.plot_sol()
 ```
 
-![alt text](img/image-4.png)
-![alt text](img/image-5.png)
+![alt text](tests/Figure_1.svg)
+![alt text](tests/Figure_2.svg)
 
 #### without control elimination
 
@@ -141,9 +141,9 @@ t=a.t_grid
 a.plot_sol()
 ```
 
-![alt text](img/image.png)
-![alt text](img/image-1.png)
-![alt text](img/image-2.png)
+![alt text](tests/Figure_3.svg)
+![alt text](tests/Figure_4.svg)
+![alt text](tests/Figure_5.svg)
 
 ### $t^2$
 
@@ -170,7 +170,7 @@ print('Global error x(N+1) for xdot=2t:',cs.evalf(b.r['xf'][-1]-100))
 Global error x(N+1) for xdot=2t: 0.0016011
 ```
 
-![alt text](img/image-6.png)
+![alt text](tests/Figure_6.svg)
 
 The default values for cvodes is 0.001 and 0.1 for absolute and relative tolerance, respectively. By increasing the tolerance global error can be reduced.
 
@@ -216,7 +216,7 @@ plt.plot(cs.evalf(d.r['xf'][0,:]),cs.evalf(d.r['xf'][1,:]),'o')
 plt.show()
 ```
 
-![alt text](img/image-7.png)
+![alt text](tests/Figure_8.svg)
 
 ## Advanced
 
@@ -230,3 +230,14 @@ c.set_ode(f)
 x0=cs.DM([0])
 c.start(x0,cs.MX.sym('u',1,10))  
 ```
+### block 
+
+![image](\examples\box.svg)
+
+![image](\examples\boc.svg)
+
+### Larson
+
+![image](\examples\larx.svg)
+
+![image](\examples\laru.svg)

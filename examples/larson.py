@@ -56,11 +56,13 @@ plt.plot(cs.evalf(a.t_grid).full(),sol.value(X[0,:]),label='x_1')
 plt.plot(cs.evalf(a.t_grid).full(),sol.value(X[1,:]),label='x_2')
 plt.legend()
 plt.grid(True)
+plt.savefig('larx.svg')
 plt.show()
 plt.figure()
 plt.step(cs.evalf(a.t_grid).full(),cs.np.hstack((cs.np.nan,sol.value(U))),label='u')
 plt.legend()
 plt.grid(True)
+plt.savefig('laru.svg')
 plt.show()
 
 # %% [markdown]

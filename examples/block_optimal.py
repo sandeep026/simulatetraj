@@ -62,11 +62,13 @@ if loop:
     plt.plot(grid.full(),sol.value(X[1,:]),label='x_2')
     plt.legend()
     plt.grid(True)
+    plt.savefig('box.svg')
     plt.show()
     plt.figure()
     plt.step(grid.full(),cs.np.hstack((cs.np.nan,sol.value(U))),label='u')
     plt.legend()
     plt.grid(True)
+    plt.savefig('boc.svg')
     plt.show()
 else:
     pass    
