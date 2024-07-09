@@ -49,11 +49,11 @@
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">simulatetraj</span> <span class="kn">import</span> <span class="n">Simulate</span>
-<span class="kn">import</span> <span class="nn">casadi</span> <span class="k">as</span> <span class="nn">cs</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="n">loop</span><span class="o">=</span><span class="kc">True</span>
-<span class="nb">map</span><span class="o">=</span><span class="kc">True</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from simulatetraj import Simulate
+import casadi as cs
+import matplotlib.pyplot as plt
+loop=True
+map=True
 </pre></div>
 </div>
 </div>
@@ -81,12 +81,12 @@ Cell <span class="ansi-green-intense-fg ansi-bold">In[1], line 1</span>
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">a</span><span class="o">=</span><span class="n">Simulate</span><span class="p">(</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
-<span class="n">f</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">vertcat</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">a</span><span class="o">.</span><span class="n">u</span><span class="p">)</span>
-<span class="n">a</span><span class="o">.</span><span class="n">set_ode</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-<span class="n">m</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">x0</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">DM</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
-<span class="n">xf</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">DM</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>a=Simulate(cs.MX(2),cs.MX(1),cs.MX(0))
+f=cs.vertcat(a.x[1],a.u)
+a.set_ode(f)
+m=cs.MX(1)
+x0=cs.DM([0,0])
+xf=cs.DM([1,0])
 </pre></div>
 </div>
 </div>
@@ -100,41 +100,41 @@ Cell <span class="ansi-green-intense-fg ansi-bold">In[1], line 1</span>
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">loop</span><span class="p">:</span>
-    <span class="n">nlp</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">Opti</span><span class="p">()</span>
-    <span class="c1">#multiple shooting</span>
-    <span class="n">N</span><span class="o">=</span><span class="mi">20</span>
-    <span class="n">grid</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">X</span><span class="o">=</span><span class="n">nlp</span><span class="o">.</span><span class="n">variable</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">cs</span><span class="o">.</span><span class="n">evalf</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">n_x</span><span class="p">)),</span><span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">U</span><span class="o">=</span><span class="n">nlp</span><span class="o">.</span><span class="n">variable</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">cs</span><span class="o">.</span><span class="n">evalf</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">n_u</span><span class="p">)),</span><span class="n">N</span><span class="p">)</span>
-    <span class="n">obj</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">sumsqr</span><span class="p">(</span><span class="n">U</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">grid</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">grid</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-    <span class="n">nlp</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
-    <span class="n">nlp</span><span class="o">.</span><span class="n">subject_to</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">x0</span><span class="o">==</span><span class="mi">0</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
-        <span class="n">a</span><span class="o">.</span><span class="n">set_grid</span><span class="p">(</span><span class="n">grid</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">grid</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">],</span><span class="n">m</span><span class="p">)</span>
-        <span class="n">a</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="n">X0</span><span class="o">=</span><span class="n">X</span><span class="p">[:,</span><span class="n">i</span><span class="p">],</span><span class="n">U</span><span class="o">=</span><span class="n">U</span><span class="p">[:,</span><span class="n">i</span><span class="p">],</span><span class="n">tol</span><span class="o">=</span><span class="mf">1e-12</span><span class="p">)</span>
-        <span class="n">nlp</span><span class="o">.</span><span class="n">subject_to</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;xf&#39;</span><span class="p">]</span><span class="o">-</span><span class="n">X</span><span class="p">[:,</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">==</span><span class="mi">0</span><span class="p">)</span>
-    <span class="n">nlp</span><span class="o">.</span><span class="n">subject_to</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">xf</span><span class="o">==</span><span class="mi">0</span><span class="p">)</span>
-    <span class="n">nlp</span><span class="o">.</span><span class="n">solver</span><span class="p">(</span><span class="s1">&#39;ipopt&#39;</span><span class="p">)</span>
-    <span class="n">nlp</span><span class="o">.</span><span class="n">set_initial</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="mi">0</span><span class="p">,:],</span><span class="n">cs</span><span class="o">.</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
-    <span class="n">nlp</span><span class="o">.</span><span class="n">set_initial</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="mi">1</span><span class="p">,:],</span><span class="n">cs</span><span class="o">.</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
-    <span class="n">nlp</span><span class="o">.</span><span class="n">set_initial</span><span class="p">(</span><span class="n">U</span><span class="p">,</span><span class="n">cs</span><span class="o">.</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">N</span><span class="p">))</span>
-    <span class="n">sol</span><span class="o">=</span><span class="n">nlp</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
-    <span class="n">obj_val</span><span class="o">=</span><span class="n">sol</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">nlp</span><span class="o">.</span><span class="n">f</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Objective value: Paper - 12 | code - </span><span class="si">{</span><span class="n">obj_val</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">full</span><span class="p">(),</span><span class="n">sol</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="mi">0</span><span class="p">,:]),</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;x_1&#39;</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">full</span><span class="p">(),</span><span class="n">sol</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="mi">1</span><span class="p">,:]),</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;x_2&#39;</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">full</span><span class="p">(),</span><span class="n">cs</span><span class="o">.</span><span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">cs</span><span class="o">.</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span><span class="n">sol</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">U</span><span class="p">))),</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;u&#39;</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-<span class="k">else</span><span class="p">:</span>
-    <span class="k">pass</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>if loop:
+    nlp=cs.Opti()
+    #multiple shooting
+    N=20
+    grid=cs.linspace(0,1,N+1)
+    X=nlp.variable(int(cs.evalf(a.n_x)),N+1)
+    U=nlp.variable(int(cs.evalf(a.n_u)),N)
+    obj=cs.sumsqr(U)*(grid[1]-grid[0])
+    nlp.minimize(obj)
+    nlp.subject_to(X[:,0]-x0==0)
+    for i in range(N):
+        a.set_grid(grid[i],grid[i+1],m)
+        a.start(X0=X[:,i],U=U[:,i],tol=1e-12)
+        nlp.subject_to(a.r[&#39;xf&#39;]-X[:,i+1]==0)
+    nlp.subject_to(X[:,-1]-xf==0)
+    nlp.solver(&#39;ipopt&#39;)
+    nlp.set_initial(X[0,:],cs.np.linspace(0,1,N+1))
+    nlp.set_initial(X[1,:],cs.np.linspace(0,1,N+1))
+    nlp.set_initial(U,cs.np.linspace(0,1,N))
+    sol=nlp.solve()
+    obj_val=sol.value(nlp.f)
+    print(f&#39;Objective value: Paper - 12 | code - {obj_val}&#39;)
+    plt.figure()
+    plt.plot(grid.full(),sol.value(X[0,:]),label=&#39;x_1&#39;)
+    plt.plot(grid.full(),sol.value(X[1,:]),label=&#39;x_2&#39;)
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+    plt.figure()
+    plt.step(grid.full(),cs.np.hstack((cs.np.nan,sol.value(U))),label=&#39;u&#39;)
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+else:
+    pass
 </pre></div>
 </div>
 </div>
@@ -212,47 +212,47 @@ Objective value: Paper - 12 | code - 12.030075127982037
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">if</span>  <span class="nb">map</span><span class="p">:</span>
-    <span class="n">nlp</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">Opti</span><span class="p">()</span>
-    <span class="c1">#multiple shooting</span>
-    <span class="n">N</span><span class="o">=</span><span class="mi">20</span>
-    <span class="n">grid</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">X</span><span class="o">=</span><span class="n">nlp</span><span class="o">.</span><span class="n">variable</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">cs</span><span class="o">.</span><span class="n">evalf</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">n_x</span><span class="p">)),</span><span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">U</span><span class="o">=</span><span class="n">nlp</span><span class="o">.</span><span class="n">variable</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">cs</span><span class="o">.</span><span class="n">evalf</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">n_u</span><span class="p">)),</span><span class="n">N</span><span class="p">)</span>
-    <span class="n">obj</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">sumsqr</span><span class="p">(</span><span class="n">U</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">grid</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">grid</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-    <span class="n">st</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="o">.</span><span class="n">sym</span><span class="p">(</span><span class="s1">&#39;st&#39;</span><span class="p">,</span><span class="nb">int</span><span class="p">(</span><span class="n">cs</span><span class="o">.</span><span class="n">evalf</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">n_x</span><span class="p">)),</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">co</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="o">.</span><span class="n">sym</span><span class="p">(</span><span class="s1">&#39;co&#39;</span><span class="p">,</span><span class="nb">int</span><span class="p">(</span><span class="n">cs</span><span class="o">.</span><span class="n">evalf</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">n_u</span><span class="p">)),</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">Ti</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="o">.</span><span class="n">sym</span><span class="p">(</span><span class="s1">&#39;ti&#39;</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">Tf</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">MX</span><span class="o">.</span><span class="n">sym</span><span class="p">(</span><span class="s1">&#39;tf&#39;</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">a</span><span class="o">.</span><span class="n">set_grid</span><span class="p">(</span><span class="n">Ti</span><span class="p">,</span><span class="n">Tf</span><span class="p">,</span><span class="n">m</span><span class="p">)</span>
-    <span class="n">a</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="n">X0</span><span class="o">=</span><span class="n">st</span><span class="p">,</span><span class="n">U</span><span class="o">=</span><span class="n">co</span><span class="p">,</span><span class="n">tol</span><span class="o">=</span><span class="mf">1e-12</span><span class="p">)</span>
-    <span class="n">int_fun</span><span class="o">=</span><span class="n">cs</span><span class="o">.</span><span class="n">Function</span><span class="p">(</span><span class="s1">&#39;int_fun&#39;</span><span class="p">,[</span><span class="n">Ti</span><span class="p">,</span><span class="n">Tf</span><span class="p">,</span><span class="n">st</span><span class="p">,</span><span class="n">co</span><span class="p">],[</span><span class="n">a</span><span class="o">.</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;xf&#39;</span><span class="p">]])</span>
-    <span class="n">int_map</span><span class="o">=</span><span class="n">int_fun</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="s1">&#39;thread&#39;</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
-    <span class="n">nlp</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
-    <span class="n">nlp</span><span class="o">.</span><span class="n">subject_to</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">x0</span><span class="o">==</span><span class="mi">0</span><span class="p">)</span>
-    <span class="n">XN</span><span class="o">=</span><span class="n">int_map</span><span class="p">(</span><span class="n">grid</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">N</span><span class="p">],</span><span class="n">grid</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">],</span><span class="n">X</span><span class="p">[:,</span><span class="mi">0</span><span class="p">:</span><span class="n">N</span><span class="p">],</span><span class="n">U</span><span class="p">)</span>
-    <span class="n">nlp</span><span class="o">.</span><span class="n">subject_to</span><span class="p">(</span><span class="n">XN</span><span class="o">-</span><span class="n">X</span><span class="p">[:,</span><span class="mi">1</span><span class="p">:</span><span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">==</span><span class="mi">0</span><span class="p">)</span>
-    <span class="n">nlp</span><span class="o">.</span><span class="n">subject_to</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">xf</span><span class="o">==</span><span class="mi">0</span><span class="p">)</span>
-    <span class="n">nlp</span><span class="o">.</span><span class="n">solver</span><span class="p">(</span><span class="s1">&#39;ipopt&#39;</span><span class="p">)</span>
-    <span class="n">nlp</span><span class="o">.</span><span class="n">set_initial</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="mi">0</span><span class="p">,:],</span><span class="n">cs</span><span class="o">.</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
-    <span class="n">nlp</span><span class="o">.</span><span class="n">set_initial</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="mi">1</span><span class="p">,:],</span><span class="n">cs</span><span class="o">.</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
-    <span class="n">nlp</span><span class="o">.</span><span class="n">set_initial</span><span class="p">(</span><span class="n">U</span><span class="p">,</span><span class="n">cs</span><span class="o">.</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">N</span><span class="p">))</span>
-    <span class="n">sol</span><span class="o">=</span><span class="n">nlp</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
-    <span class="n">obj_val</span><span class="o">=</span><span class="n">sol</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">nlp</span><span class="o">.</span><span class="n">f</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Objective value: Paper - 12 | code - </span><span class="si">{</span><span class="n">obj_val</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">full</span><span class="p">(),</span><span class="n">sol</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="mi">0</span><span class="p">,:]),</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;x_1&#39;</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">full</span><span class="p">(),</span><span class="n">sol</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="mi">1</span><span class="p">,:]),</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;x_2&#39;</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">full</span><span class="p">(),</span><span class="n">cs</span><span class="o">.</span><span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">cs</span><span class="o">.</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span><span class="n">sol</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="n">U</span><span class="p">))),</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;u&#39;</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-<span class="k">else</span><span class="p">:</span>
-    <span class="k">pass</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>if  map:
+    nlp=cs.Opti()
+    #multiple shooting
+    N=20
+    grid=cs.linspace(0,1,N+1)
+    X=nlp.variable(int(cs.evalf(a.n_x)),N+1)
+    U=nlp.variable(int(cs.evalf(a.n_u)),N)
+    obj=cs.sumsqr(U)*(grid[1]-grid[0])
+    st=cs.MX.sym(&#39;st&#39;,int(cs.evalf(a.n_x)),1)
+    co=cs.MX.sym(&#39;co&#39;,int(cs.evalf(a.n_u)),1)
+    Ti=cs.MX.sym(&#39;ti&#39;,1,1)
+    Tf=cs.MX.sym(&#39;tf&#39;,1,1)
+    a.set_grid(Ti,Tf,m)
+    a.start(X0=st,U=co,tol=1e-12)
+    int_fun=cs.Function(&#39;int_fun&#39;,[Ti,Tf,st,co],[a.r[&#39;xf&#39;]])
+    int_map=int_fun.map(N,&#39;thread&#39;,2)
+    nlp.minimize(obj)
+    nlp.subject_to(X[:,0]-x0==0)
+    XN=int_map(grid[0:N],grid[1:N+1],X[:,0:N],U)
+    nlp.subject_to(XN-X[:,1:N+1]==0)
+    nlp.subject_to(X[:,-1]-xf==0)
+    nlp.solver(&#39;ipopt&#39;)
+    nlp.set_initial(X[0,:],cs.np.linspace(0,1,N+1))
+    nlp.set_initial(X[1,:],cs.np.linspace(0,1,N+1))
+    nlp.set_initial(U,cs.np.linspace(0,1,N))
+    sol=nlp.solve()
+    obj_val=sol.value(nlp.f)
+    print(f&#39;Objective value: Paper - 12 | code - {obj_val}&#39;)
+    plt.figure()
+    plt.plot(grid.full(),sol.value(X[0,:]),label=&#39;x_1&#39;)
+    plt.plot(grid.full(),sol.value(X[1,:]),label=&#39;x_2&#39;)
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+    plt.figure()
+    plt.step(grid.full(),cs.np.hstack((cs.np.nan,sol.value(U))),label=&#39;u&#39;)
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+else:
+    pass
 </pre></div>
 </div>
 </div>
@@ -347,9 +347,7 @@ Objective value: Paper - 12 | code - 12.03007512802146
 <h3>Navigation</h3>
 <p class="caption" role="heading"><span class="caption-text">Introduction:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../intro.html">Dependencies</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../intro.html#installation">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../intro.html#limitations">Limitations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">Installation</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Examples:</span></p>
 <ul>

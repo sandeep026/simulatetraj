@@ -85,10 +85,10 @@ Plot the state and control time histories.
 
    a.plot_sol()
 
-.. image:: ../../img/image.png
+.. image:: ../../tests/Figure_1.svg
    :alt: Alternate text
 
-.. image:: ../../img/image-1.png
+.. image:: ../../tests/Figure_2.svg
    :alt: Alternate text
 
 without control elimination
@@ -108,13 +108,13 @@ The control input is approximated as a piecewise constant function.
    t=a.t_grid
    a.plot_sol()
 
-.. image:: ../../img/image-4.png
+.. image:: ../../tests/Figure_3.svg
    :alt: Alternate text
 
-.. image:: ../../img/image-5.png
+.. image:: ../../tests/Figure_4.svg
    :alt: Alternate text
 
-.. image:: ../../img/image-2.png
+.. image:: ../../tests/Figure_5.svg
    :alt: Alternate text
 
 
@@ -145,7 +145,7 @@ ODE 2
 
    Global error x(N+1) for xdot=2t: 0.0016011
 
-.. image:: ../../img/image-6.png
+.. image:: ../../tests/Figure_6.svg
    :alt: Alternate text
 
 The default values for cvodes is 0.001 and 0.1 for absolute and relative
@@ -197,5 +197,5 @@ Lotka voltera/prey-predator model
    plt.plot(cs.evalf(d.r['xf'][0,:]),cs.evalf(d.r['xf'][1,:]),'o')
    plt.show()
 
-.. image:: ../../img/image-7.png
+.. image:: ../../tests/Figure_8.svg
    :alt: Alternate text

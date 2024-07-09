@@ -26,7 +26,7 @@ extensions = [
     "sphinx.ext.autodoc",
     'sphinx.ext.mathjax',
     'sphinx.ext.duration',
-    'sphinx.ext.doctest',
+#    'sphinx.ext.doctest',
     'sphinx.ext.autosummary',
     'sphinx.ext.napoleon',
     'matplotlib.sphinxext.plot_directive',
