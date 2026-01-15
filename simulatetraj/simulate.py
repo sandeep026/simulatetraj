@@ -313,6 +313,11 @@ class Simulate:
                 plt.legend()
                 plt.show()
 
+# t0 tf N
+# xdot
+# x0
+
+
 if __name__=='__main__':
 
     # multipoint_simulation-casadi
